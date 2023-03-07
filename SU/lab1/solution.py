@@ -1,5 +1,10 @@
 import numpy as np
 
+
+# INFORMACJE DO ROZWIĄZANIA: Zaimplementowany algorytm wyszukuje najmniejszą możliwą wariancję po danym podziale spośród wszystkich możliwych podziałów (rozwiązań) na danym
+# poziomie. Poniżej ustawiona jest wartość maksymalnej wysokości drzewa, służąca za warunek stopu w rekurencyjnym budowaniu drzewa regresji. Najważniejsze parametry w klasie
+# Node zostały wyjaśnione obok ich deklaracji. Rozwiązanie poza metodą best_split, gdzie wykorzystana jest wariancja jako funkcja ewaluacji, nie wyróżnia się niczym szczególnym. 
+
 MAX_DEPTH = 5
 
 class Node(object):
@@ -26,7 +31,7 @@ class Node(object):
 				d1 = data[data[:, y] <= feature_value]
 				d2 = data[data[:, y] > feature_value]
 				if len(d1) > 0 and len(d2) > 0:
-					modified_variance = len(d1)/len(data)*self.calc_variance(d1, nAttr) + len(d2)/len(data)*self.calc_variance(d2, nAttr)
+					modified_variance = len(d1) / len(data) * self.calc_variance(d1, nAttr) + len(d2) / len(data) * self.calc_variance(d2, nAttr)
 					if modified_variance < best_variance:
 						best_variance = modified_variance
 						feature_index = y
@@ -50,18 +55,7 @@ class Node(object):
 			self.right.perform_split(d2, nAttr, recurrence_level + 1)
 		else:
 			self.value = np.mean(data[:, nAttr])
-		# Znajdź najlepszy podział data
-		# if uzyskano poprawę funkcji celu (bądź inny, zaproponowany przez Ciebie warunek):
-			#podziel dane na dwie części d1 i d2, zgodnie z warunkiem
-			#self.left = Node()
-			#self.right = Node()
-			#self.left.perform_split(d1)
-			#self.right.perform_split(d2)
-		#else:
-			#obecny Node jest liściem, zapisz jego odpowiedź
 		
-
-
 	
 	def predict(self, example):
 		if self.feature_index is not None:
@@ -69,16 +63,7 @@ class Node(object):
 				return self.right.predict(example)
 			else:
 				return self.left.predict(example)
-		return self.value
-		"""
-		if not Node jest liściem:
-			if warunek podziału jest spełniony:
-				return self.right.predict(example)
-			else:
-				return self.left.predict(example)
-		return zwróć wartość (Node jest liściem)
-		"""
-		
+		return self.value		
 		
 		
 		
