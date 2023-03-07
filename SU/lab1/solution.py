@@ -75,7 +75,7 @@ class Node(object):
 # Jeśli nie znasz numpy - skorzystaj z kodu, dokończ zadanie... i naucz sie numpy. W kolejnych tygodniach będziemy z niego korzystać.
 
 for file_id in range(1, 14):
-	id = f"./data/{file_id}" # podaj id zbioru danych który chcesz przetworzyć np. 1
+	id = f"./data/{file_id}" 
 	data = []
 	y = [line.strip() for line in open(id + '-Y.csv')]
 	for i, line in enumerate(open(id + '-X.csv')):
