@@ -5,7 +5,7 @@ import numpy as np
 # poziomie. Poniżej ustawiona jest wartość maksymalnej wysokości drzewa, służąca za warunek stopu w rekurencyjnym budowaniu drzewa regresji. Najważniejsze parametry w klasie
 # Node zostały wyjaśnione obok ich deklaracji. Rozwiązanie poza metodą best_split, gdzie wykorzystana jest wariancja jako funkcja ewaluacji, nie wyróżnia się niczym szczególnym. 
 
-MAX_DEPTH = 5
+MAX_DEPTH = 7
 
 class Node(object):
 	def __init__(self):
