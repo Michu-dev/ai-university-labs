@@ -4,26 +4,34 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d0b72d20-d393-4127-b975-31d210f4515d" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/codeStyles/Project.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
+    <list default="true" id="69b4557e-30be-4883-a4c2-c370d4110a86" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/codeStyles/Project.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/files/tableAPPLE_NASDAQ.csv" beforeDir="false" afterPath="$PROJECT_DIR$/files/tableAPPLE_NASDAQ.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/files/tableCOCACOLA_NYSE.csv" beforeDir="false" afterPath="$PROJECT_DIR$/files/tableCOCACOLA_NYSE.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/files/tableDISNEY_NYSE.csv" beforeDir="false" afterPath="$PROJECT_DIR$/files/tableDISNEY_NYSE.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/files/tableFORD_NYSE.csv" beforeDir="false" afterPath="$PROJECT_DIR$/files/tableFORD_NYSE.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/files/tableGOOGLE_NASDAQ.csv" beforeDir="false" afterPath="$PROJECT_DIR$/files/tableGOOGLE_NASDAQ.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/files/tableHONDA_NYSE.csv" beforeDir="false" afterPath="$PROJECT_DIR$/files/tableHONDA_NYSE.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/files/tableIBM_NASDAQ.csv" beforeDir="false" afterPath="$PROJECT_DIR$/files/tableIBM_NASDAQ.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/files/tableINTEL_NASDAQ.csv" beforeDir="false" afterPath="$PROJECT_DIR$/files/tableINTEL_NASDAQ.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/files/tableMICROSOFT_NASDAQ.csv" beforeDir="false" afterPath="$PROJECT_DIR$/files/tableMICROSOFT_NASDAQ.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/files/tableORACLE_NASDAQ.csv" beforeDir="false" afterPath="$PROJECT_DIR$/files/tableORACLE_NASDAQ.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/files/tablePEPSICO_NYSE.csv" beforeDir="false" afterPath="$PROJECT_DIR$/files/tablePEPSICO_NYSE.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/files/tableYAHOO_NASDAQ.csv" beforeDir="false" afterPath="$PROJECT_DIR$/files/tableYAHOO_NASDAQ.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/InputStream.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/InputStream.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ProstyListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ProstyListener.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/InputStream$InformacjeOPliku.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/InputStream$InformacjeOPliku.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/InputStream$ReverseLineReader.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/InputStream$ReverseLineReader.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/InputStream.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/InputStream.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/KursAkcji.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/KursAkcji.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/Main.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/Main.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ProstyListener.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ProstyListener.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../SU/lab1/data/1.csv" beforeDir="false" afterPath="$PROJECT_DIR$/../../SU/lab1/data/1.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../SU/lab1/data/10.csv" beforeDir="false" afterPath="$PROJECT_DIR$/../../SU/lab1/data/10.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../SU/lab1/data/11.csv" beforeDir="false" afterPath="$PROJECT_DIR$/../../SU/lab1/data/11.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../SU/lab1/data/12.csv" beforeDir="false" afterPath="$PROJECT_DIR$/../../SU/lab1/data/12.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../SU/lab1/data/13.csv" beforeDir="false" afterPath="$PROJECT_DIR$/../../SU/lab1/data/13.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../SU/lab1/data/2.csv" beforeDir="false" afterPath="$PROJECT_DIR$/../../SU/lab1/data/2.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../SU/lab1/data/3.csv" beforeDir="false" afterPath="$PROJECT_DIR$/../../SU/lab1/data/3.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../SU/lab1/data/4.csv" beforeDir="false" afterPath="$PROJECT_DIR$/../../SU/lab1/data/4.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../SU/lab1/data/5.csv" beforeDir="false" afterPath="$PROJECT_DIR$/../../SU/lab1/data/5.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../SU/lab1/data/6.csv" beforeDir="false" afterPath="$PROJECT_DIR$/../../SU/lab1/data/6.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../SU/lab1/data/7.csv" beforeDir="false" afterPath="$PROJECT_DIR$/../../SU/lab1/data/7.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../SU/lab1/data/8.csv" beforeDir="false" afterPath="$PROJECT_DIR$/../../SU/lab1/data/8.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../SU/lab1/data/9.csv" beforeDir="false" afterPath="$PROJECT_DIR$/../../SU/lab1/data/9.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../SU/lab1/output.csv" beforeDir="false" afterPath="$PROJECT_DIR$/../../SU/lab1/output.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../SU/lab1/solution.py" beforeDir="false" afterPath="$PROJECT_DIR$/../../SU/lab1/solution.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -56,17 +64,22 @@
   <component name="ProjectCodeStyleSettingsMigration">
     <option name="version" value="2" />
   </component>
-  <component name="ProjectId" id="2MbBaFOkjFRMxAhALI97t2O5C5R" />
+  <component name="ProjectId" id="2MoeSAvewuXEVupKGhdxDkbULq0" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">
-    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
-    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
-    <property name="WebServerToolWindowFactoryState" value="false" />
-  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "project.structure.last.edited": "Project",
+    "project.structure.proportion": "0.0",
+    "project.structure.side.proportion": "0.0"
+  }
+}]]></component>
   <component name="RunManager">
     <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="Main" />
@@ -84,16 +97,27 @@
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="d0b72d20-d393-4127-b975-31d210f4515d" name="Changes" comment="" />
-      <created>1678026467300</created>
+      <changelist id="69b4557e-30be-4883-a4c2-c370d4110a86" name="Changes" comment="" />
+      <created>1678438371264</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1678026467300</updated>
-      <workItem from="1678026475687" duration="4387000" />
+      <updated>1678438371264</updated>
+      <workItem from="1678438375169" duration="3721000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
 </project>

@@ -21,8 +21,8 @@ public class EsperClient {
         int noOfRecordsPerSec;
         int howLongInSec;
         if (args.length < 2) {
-            noOfRecordsPerSec = 20;
-            howLongInSec = 30;
+            noOfRecordsPerSec = 2;
+            howLongInSec = 3;
         } else {
             noOfRecordsPerSec = Integer.parseInt(args[0]);
             howLongInSec = Integer.parseInt(args[1]);
@@ -37,7 +37,7 @@ public class EsperClient {
         try {
             epCompiled = compiler.compile("""
                     @public @buseventtype create json schema ScoreEvent(house string, character string, score int, ts string);
-                    @name('result') SELECT s.score as score, s.character as character, s.house as house, (SELECT AVG(w.score) FROM ScoreEvent.win:time_batch(10 sec) w WHERE s.house = w.house) as avgscore from ScoreEvent s WHERE score > (SELECT AVG(w.score) FROM ScoreEvent.win:time_batch(10 sec) w WHERE s.house = w.house);""", compilerArgs);
+                    @name('result') SELECT * from ScoreEvent;""", compilerArgs);
         }
         catch (EPCompileException ex) {
             // handle exception here

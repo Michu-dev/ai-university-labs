@@ -16,6 +16,5 @@ public class ProstyListener implements UpdateListener {
                 System.out.println("RSTREAM : " + oldEvent.getUnderlying());
             }
         }
-
     }
 }

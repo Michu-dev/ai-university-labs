@@ -1,3 +1,5 @@
+import java.io.IOException;
+
 import com.espertech.esper.common.client.configuration.Configuration;
 import com.espertech.esper.runtime.client.EPRuntime;
 import com.espertech.esper.runtime.client.EPRuntimeProvider;
@@ -7,8 +9,6 @@ import com.espertech.esper.compiler.client.EPCompileException;
 import com.espertech.esper.compiler.client.EPCompilerProvider;
 import com.espertech.esper.runtime.client.*;
 
-
-import java.io.IOException;
 
 public class Main {
 
@@ -34,7 +34,7 @@ public class Main {
         configuration.getCommon().addEventType(KursAkcji.class);
         EPRuntime epRuntime = EPRuntimeProvider.getDefaultRuntime(configuration);
 
-        EPDeployment deployment = compileAndDeploy(epRuntime,"select istream w.data, w.spolka, (select max(s.kursOtwarcia) from KursAkcji#length(3) s where s.data <= w.data order by s.data limit 5) from KursAkcji#length(3) w where w.spolka='Oracle';");
+        EPDeployment deployment = compileAndDeploy(epRuntime,"select istream spolka, kursOtwarcia - first(kursOtwarcia) AS roznica, data from KursAkcji(spolka='Oracle').win:length(2) group by spolka having kursOtwarcia - first(kursOtwarcia) > 0;");
 
         ProstyListener prostyListener = new ProstyListener();
 

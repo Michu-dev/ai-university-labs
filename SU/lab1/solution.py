@@ -5,7 +5,7 @@ import numpy as np
 # poziomie. Poniżej ustawiona jest wartość maksymalnej wysokości drzewa, służąca za warunek stopu w rekurencyjnym budowaniu drzewa regresji. Najważniejsze parametry w klasie
 # Node zostały wyjaśnione obok ich deklaracji. Rozwiązanie poza metodą best_split, gdzie wykorzystana jest wariancja jako funkcja ewaluacji, nie wyróżnia się niczym szczególnym. 
 
-MAX_DEPTH = 7
+MAX_DEPTH = 20
 
 class Node(object):
 	def __init__(self):
@@ -14,13 +14,9 @@ class Node(object):
 		self.feature_index = None # atrybut (numer), według którego wykonywany jest podział
 		self.threshold = None # wartość, według której wykonywany jest podział
 		self.value = None # wynik (występuje tylko w liściach)
-
-	def calc_variance(self, data: list, nAttr: int):
-		y = data[:, nAttr]
-		return np.var(y)
 	
 	def best_split(self, data, nAttr):
-		current_variance = self.calc_variance(data, nAttr)
+		current_variance = np.var(data[:, nAttr])
 		best_variance = current_variance
 		feature_index = None
 		threshold = None
@@ -31,7 +27,7 @@ class Node(object):
 				d1 = data[data[:, y] <= feature_value]
 				d2 = data[data[:, y] > feature_value]
 				if len(d1) > 0 and len(d2) > 0:
-					modified_variance = len(d1) / len(data) * self.calc_variance(d1, nAttr) + len(d2) / len(data) * self.calc_variance(d2, nAttr)
+					modified_variance = len(d1) / len(data) * np.var(d1[:, nAttr]) + len(d2) / len(data) * np.var(d2[:, nAttr])
 					if modified_variance < best_variance:
 						best_variance = modified_variance
 						feature_index = y
