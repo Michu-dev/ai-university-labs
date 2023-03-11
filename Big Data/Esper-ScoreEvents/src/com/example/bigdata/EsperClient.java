@@ -14,6 +14,8 @@ import net.datafaker.fileformats.Format;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 public class EsperClient {
@@ -34,10 +36,12 @@ public class EsperClient {
         // Compile the EPL statement
         EPCompiler compiler = EPCompilerProvider.getCompiler();
         EPCompiled epCompiled;
+//        @public @buseventtype create json schema ScoreEvent(house string, character string, score int, ts string);
+//        @name('result') SELECT s.score as score, s.character as character, s.house as house, (SELECT AVG(w.score) FROM ScoreEvent.win:time_batch(10 sec) w WHERE s.house = w.house) as avgscore from ScoreEvent s WHERE score > (SELECT AVG(w.score) FROM ScoreEvent.win:time_batch(10 sec) w WHERE s.house = w.house);
         try {
             epCompiled = compiler.compile("""
-                    @public @buseventtype create json schema ScoreEvent(house string, character string, score int, ts string);
-                    @name('result') SELECT * from ScoreEvent;""", compilerArgs);
+                    @public @buseventtype create json schema FormulaEvent(team string, driver string, result int, points int, place string, ts string);
+                    @name('result') SELECT * FROM FormulaEvent;""", compilerArgs);
         }
         catch (EPCompileException ex) {
             // handle exception here
@@ -67,18 +71,49 @@ public class EsperClient {
         Faker faker = new Faker();
         String record;
 
+        Map<Integer, Integer> placeToPoints = new HashMap<Integer, Integer>();
+        placeToPoints.put(1, 25);
+        placeToPoints.put(2, 18);
+        placeToPoints.put(3, 15);
+        placeToPoints.put(4, 12);
+        placeToPoints.put(5, 10);
+        placeToPoints.put(6, 8);
+        placeToPoints.put(7, 6);
+        placeToPoints.put(8, 4);
+        placeToPoints.put(9, 2);
+        placeToPoints.put(10, 1);
+        for (int i = 11; i <= 20; i++)
+            placeToPoints.put(i, 0);
         long startTime = System.currentTimeMillis();
         while (System.currentTimeMillis() < startTime + (1000L * howLongInSec)) {
             for (int i = 0; i < noOfRecordsPerSec; i++) {
-                String house = faker.harryPotter().house();
-                Timestamp timestamp = faker.date().past(30, TimeUnit.SECONDS);
+//                String house = faker.harryPotter().house();
+//                Timestamp timestamp = faker.date().past(30, TimeUnit.SECONDS);
+//                record = Format.toJson()
+//                        .set("house", () -> house)
+//                        .set("character", () -> faker.harryPotter().character())
+//                        .set("score", () -> String.valueOf(faker.number().randomDigitNotZero()))
+//                        .set("ts", () -> timestamp.toString())
+//                        .build().generate();
+//                runtime.getEventService().sendEventJson(record, "ScoreEvent");
+
+                String team = faker.formula1().team();
+
+                Integer position = faker.number().numberBetween(1, 20);
+                Timestamp timestamp = faker.date().past(365, TimeUnit.DAYS);
+                Integer points = placeToPoints.get(position);
+
+
                 record = Format.toJson()
-                        .set("house", () -> house)
-                        .set("character", () -> faker.harryPotter().character())
-                        .set("score", () -> String.valueOf(faker.number().randomDigitNotZero()))
+                        .set("team", () -> team)
+                        .set("driver", () -> faker.formula1().driver())
+                        .set("result", () -> position)
+                        .set("points", () -> points)
+                        .set("place", () -> faker.formula1().grandPrix())
                         .set("ts", () -> timestamp.toString())
                         .build().generate();
-                runtime.getEventService().sendEventJson(record, "ScoreEvent");
+                runtime.getEventService().sendEventJson(record, "FormulaEvent");
+
             }
             waitToEpoch();
         }
