@@ -58,3 +58,63 @@ Wykrywaj przypadki zdobycia przez kierowców liczby większej niż 10 za dany wy
 Wykrywanie anomalii oparte na agregacji
 Znajduj przypadki, w których liczba punktów zdobytych przez danego producenta samochodami elektrycznymi będzie stanowiła co najmniej 20% wszystkich
 zdobytych punktów przez tego producenta w całym sezonie lub określonym okresie czasu.
+
+
+
+Opis charakteru danych
+Dane prezentują losowe dane uzyskiwane przy użyciu "fotoradarów" (czujników) ustawionych w różnych miejscach na świecie. Dla zasady przyjmuję, że dane
+dotyczące pojazdu, właściciela itp. są przechowywane nie tylko po przekroczeniu ustawowej prędkości 50 km/h, ale są one generowane dla wszystkich
+przejeżdżących w danym miejscu aut. Dlatego "fotoradar" pełni bardziej funkcję czujnika aniżeli narzędzia służącego do kontroli kodeksu ruchu drogowego.
+Jednak przyjmuję, że czujniki są ustawione na obszarach zabudowanych, dlatego po przekroczeniu ustawowej prędkości (przyjmuję 50 km/h) dla właściciela
+pojazdu będą generowane mandaty na podstawie wymyślonej przeze mnie polityki. Etykieta czasowa oznacza losowy moment wykonania pomiaru (brane pod uwagę
+są ostatnie 365 dni od dnia bieżącego).
+
+Opis atrybutów
+Atrybuty w każdym zdarzeniu mają następujące znaczenie:
+* car
+  - typ: string
+  - znaczenie: nazwa marki samochodu
+  - kategoria: atrybut lub atrybuty dodatkowe, opisujące zdarzenie
+* team
+  - typ: string
+  - znaczenie: nazwa producenta danego samochodu
+  - kategoria: atrybut lub atrybuty dodatkowe, opisujące zdarzenie
+* driver
+  - typ: string
+  - znaczenie: imię i nazwisko właściciela pojazdu
+  - kategoria: atrybut lub atrybuty dodatkowe, opisujące zdarzenie
+* car_type
+  - typ: string
+  - znaczenie: rodzaj nadwozia pojazdu
+  - kategoria: atrybut, lub atrybuty, po których można dane grupować (zawierający ograniczoną liczbę możliwych wartości (5-10)
+* fuel_type
+ - typ: string
+ - znaczenie: rodzaj paliwa wykorzystywanego przez dany pojazd
+ - kategoria: atrybut, lub atrybuty, po których można dane grupować (zawierający ograniczoną liczbę możliwych wartości (5-10)
+* velocity
+  - typ: int
+  - znaczenie: prędkość pojazdu w punkcie pomiarowym
+  - kategoria: atrybut lub atrybuty dodatkowe, opisujące zdarzenie
+* fine
+  - typ: int
+  - znaczenie: kara pieniężna za przekroczenie prędkości (w Euro)
+  - kategoria: atrybut lub atrybuty, których wartości można agregować (wartości numeryczne)
+* penalty_points
+  - typ: string
+  - znaczenie: punkty karne za złamanie przepisu ruchu drogowego (przekroczenie prędkości), przyjmuję że powyzej 24 punktów właściciel pojazdu traci prawo jazdy
+  - kategoria: atrybut lub atrybuty dodatkowe, opisujące zdarzenie
+* ts
+  - typ: string
+  - znaczenie: czas rejestracji zdarzenia (pomiaru prędkości wraz z identyfikacją pojazdu)
+  - kategoria: kategoria: znacznik czasowy zdarzeń (inny niż czas systemowy)
+
+Opis trzech przykładowych analiz
+Propozycje możliwych analiz opartych na tym generatorze danych
+Agregacja
+Utrzymuj informacje o maksymalnej zarejestrowanej prędkości poszczególne osoby lub marki pojazdów w całym roku (sezonie) lub określonym przedziale czasu.
+Wykrywanie anomalii
+Wykrywaj przypadki przekroczenia prędkości 100 km/h przez danego kierowcę w danym aucie.
+Wykrywanie anomalii oparte na agregacji
+Wykrywaj przypadki zdobycia przez właścicieli pojazdów liczby punktów karnych większej lub równej 24, która oznacza pozbawienie danego kierowcy prawa jazdy.
+
+
