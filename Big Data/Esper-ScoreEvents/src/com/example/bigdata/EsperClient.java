@@ -20,6 +20,11 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
 public class EsperClient {
+
+    public static boolean isBetween(int x, int lower, int upper) {
+        return lower <= x && x <= upper;
+    }
+
     public static void main(String[] args) throws InterruptedException {
         int noOfRecordsPerSec;
         int howLongInSec;
@@ -41,8 +46,8 @@ public class EsperClient {
 //        @name('result') SELECT s.score as score, s.character as character, s.house as house, (SELECT AVG(w.score) FROM ScoreEvent.win:time_batch(10 sec) w WHERE s.house = w.house) as avgscore from ScoreEvent s WHERE score > (SELECT AVG(w.score) FROM ScoreEvent.win:time_batch(10 sec) w WHERE s.house = w.house);
         try {
             epCompiled = compiler.compile("""
-                    @public @buseventtype create json schema MotorSportEvent(car string, team string, driver string, car_type string, fuel_type string, result int, points int, place string, ts string);
-                    @name('result') SELECT * FROM MotorSportEvent;""", compilerArgs);
+                    @public @buseventtype create json schema TrafficEvent(car string, manufacturer string, car_owner string, car_type string, fuel_type string, velocity int, fine int, penalty_points int, ts string);
+                    @name('result') SELECT * FROM TrafficEvent;""", compilerArgs);
         }
         catch (EPCompileException ex) {
             // handle exception here
@@ -69,23 +74,10 @@ public class EsperClient {
             }
         });
 
-        Faker faker = new Faker();
+        Faker faker = new Faker(new Locale("pl"));
         String record;
 
-        Map<Integer, Integer> placeToPoints = new HashMap<Integer, Integer>();
         Map<String, String[]> modelsDict = new HashMap<String, String[]>();
-        placeToPoints.put(1, 25);
-        placeToPoints.put(2, 18);
-        placeToPoints.put(3, 15);
-        placeToPoints.put(4, 12);
-        placeToPoints.put(5, 10);
-        placeToPoints.put(6, 8);
-        placeToPoints.put(7, 6);
-        placeToPoints.put(8, 4);
-        placeToPoints.put(9, 2);
-        placeToPoints.put(10, 1);
-        for (int i = 11; i <= 20; i++)
-            placeToPoints.put(i, 0);
 
         modelsDict.put("Audi", new String[] { "A4", "A5", "S5", "A7", "A8" });
         modelsDict.put("BMW", new String[] { "328i", "M3", "M5", "X1", "X3", "X5" });
@@ -131,17 +123,48 @@ public class EsperClient {
 
 //                String team = faker.formula1().team();
 
-                Integer position = faker.number().numberBetween(1, 20);
-                Timestamp timestamp = faker.date().past(365, TimeUnit.DAYS);
-                Integer points = placeToPoints.get(position);
+                Integer velocity = faker.number().numberBetween(1, 150);
+                Timestamp timestamp = faker.date().past(60, TimeUnit.SECONDS);
+                Integer fine = 0, penalty_points = 0;
+
+                if(isBetween(velocity, 51, 60)) {
+                    fine = 50;
+                    penalty_points = 1;
+                } else if (isBetween(velocity, 61, 65)) {
+                    fine = 100;
+                    penalty_points = 2;
+                } else if (isBetween(velocity, 66, 70)) {
+                    fine = 200;
+                    penalty_points = 3;
+                } else if (isBetween(velocity, 71, 75)) {
+                    fine = 300;
+                    penalty_points = 5;
+                } else if (isBetween(velocity, 76, 80)) {
+                    fine = 400;
+                    penalty_points = 7;
+                } else if (isBetween(velocity, 81, 90)) {
+                    fine = 800;
+                    penalty_points = 9;
+                } else if (isBetween(velocity, 91, 100)) {
+                    fine = 1000;
+                    penalty_points = 11;
+                } else if (isBetween(velocity, 101, 110)) {
+                    fine = 1500;
+                    penalty_points = 13;
+                } else if (isBetween(velocity, 111, 120)) {
+                    fine = 2000;
+                    penalty_points = 14;
+                } else if (velocity > 121) {
+                    fine = 2500;
+                    penalty_points = 15;
+                }
 
                 Vehicle vehicle = faker.vehicle();
 
                 String car = vehicle.model();
-                String team = new String();
-                String engine = vehicle.engine();
+                String manufacturer = new String();
 
-                String driver = faker.name().name();
+                String carOwner = faker.name().name();
 
                 Iterator<Map.Entry<String, String[]>> iterator = modelsDict.entrySet().iterator();
                 while (iterator.hasNext()) {
@@ -149,7 +172,7 @@ public class EsperClient {
                     List<String> list = Arrays.asList(entry.getValue());
 
                     if(list.contains(car)) {
-                        team = entry.getKey();
+                        manufacturer = entry.getKey();
                         break;
                     }
 
@@ -158,20 +181,21 @@ public class EsperClient {
                 String carType = vehicle.carType();
                 String fuelType = vehicle.fuelType();
 
-
-                String finalTeam = team;
+                String finalManufacturer = manufacturer;
+                Integer finalFine = fine;
+                Integer finalPenaltyPoints = penalty_points;
                 record = Format.toJson()
                         .set("car", () -> car)
-                        .set("team", () -> finalTeam)
-                        .set("driver", () -> driver)
+                        .set("manufacturer", () -> finalManufacturer)
+                        .set("car_owner", () -> carOwner)
                         .set("car_type", () -> carType)
                         .set("fuel_type", () -> fuelType)
-                        .set("result", () -> position)
-                        .set("points", () -> points)
-                        .set("place", () -> faker.formula1().grandPrix())
+                        .set("velocity", () -> velocity)
+                        .set("fine", () -> finalFine)
+                        .set("penalty_points", () -> finalPenaltyPoints)
                         .set("ts", () -> timestamp.toString())
                         .build().generate();
-                runtime.getEventService().sendEventJson(record, "MotorSportEvent");
+                runtime.getEventService().sendEventJson(record, "TrafficEvent");
 
             }
             waitToEpoch();
