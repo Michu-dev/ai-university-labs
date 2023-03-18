@@ -42,12 +42,13 @@ public class EsperClient {
         // Compile the EPL statement
         EPCompiler compiler = EPCompilerProvider.getCompiler();
         EPCompiled epCompiled;
+//        car_type string, fuel_type string,
 //        @public @buseventtype create json schema ScoreEvent(house string, character string, score int, ts string);
 //        @name('result') SELECT s.score as score, s.character as character, s.house as house, (SELECT AVG(w.score) FROM ScoreEvent.win:time_batch(10 sec) w WHERE s.house = w.house) as avgscore from ScoreEvent s WHERE score > (SELECT AVG(w.score) FROM ScoreEvent.win:time_batch(10 sec) w WHERE s.house = w.house);
         try {
             epCompiled = compiler.compile("""
-                    @public @buseventtype create json schema TrafficEvent(car string, manufacturer string, car_owner string, car_type string, fuel_type string, velocity int, fine int, penalty_points int, ts string);
-                    @name('result') SELECT * FROM TrafficEvent;""", compilerArgs);
+                    @public @buseventtype create json schema TrafficEvent(car string, manufacturer string, city string, car_owner string, velocity int, fine int, penalty_points int, ts string);
+                    @name('result') SELECT car_owner, SUM(penalty_points) FROM TrafficEvent GROUP BY car_owner HAVING SUM(penalty_points) >= 24;""", compilerArgs);
         }
         catch (EPCompileException ex) {
             // handle exception here
@@ -67,6 +68,8 @@ public class EsperClient {
 
         EPStatement resultStatement = runtime.getDeploymentService().getStatement(deployment.getDeploymentId(), "result");
 
+        int numberOfPeople = 400;
+
         // Add a listener to the statement to handle incoming events
         resultStatement.addListener( (newData, oldData, stmt, runTime) -> {
             for (EventBean eventBean : newData) {
@@ -78,6 +81,8 @@ public class EsperClient {
         String record;
 
         Map<String, String[]> modelsDict = new HashMap<String, String[]>();
+        Map<Integer, String> polishCities = new HashMap<Integer, String>();
+        Map<Integer, String> people = new HashMap<Integer, String>();
 
         modelsDict.put("Audi", new String[] { "A4", "A5", "S5", "A7", "A8" });
         modelsDict.put("BMW", new String[] { "328i", "M3", "M5", "X1", "X3", "X5" });
@@ -107,6 +112,34 @@ public class EsperClient {
         modelsDict.put("Volvo", new String[] { "C40", "XC40", "XC60", "S60", "S90", "V60", "V90" });
         modelsDict.put("Xpeng", new String[] { "G9", "G3i", "P7", "P5"});
 
+        polishCities.put(1, "Warszawa");
+        polishCities.put(2, "Kraków");
+        polishCities.put(3, "Wrocław");
+        polishCities.put(4, "Łódź");
+        polishCities.put(5, "Poznań");
+        polishCities.put(6, "Gdańsk");
+        polishCities.put(7, "Szczecin");
+        polishCities.put(8, "Bydgoszcz");
+        polishCities.put(9, "Lublin");
+        polishCities.put(10, "Białystok");
+        polishCities.put(11, "Toruń");
+        polishCities.put(12, "Gorzów Wielkopolski");
+        polishCities.put(13, "Zielona Góra");
+        polishCities.put(14, "Opole");
+        polishCities.put(15, "Rzeszów");
+        polishCities.put(16, "Katowice");
+        polishCities.put(17, "Kielce");
+        polishCities.put(18, "Olsztyn");
+
+
+
+        for (int i = 1; i <= numberOfPeople; i++) {
+            String firstName = faker.name().firstName();
+            String lastName = faker.name().lastName();
+            String fullName = firstName + " " + lastName;
+            people.put(i, fullName);
+        }
+
 
         long startTime = System.currentTimeMillis();
         while (System.currentTimeMillis() < startTime + (1000L * howLongInSec)) {
@@ -124,6 +157,8 @@ public class EsperClient {
 //                String team = faker.formula1().team();
 
                 Integer velocity = faker.number().numberBetween(1, 150);
+                Integer cityIndex = faker.number().numberBetween(1, 18);
+                Integer personIndex = faker.number().numberBetween(1, numberOfPeople);
                 Timestamp timestamp = faker.date().past(60, TimeUnit.SECONDS);
                 Integer fine = 0, penalty_points = 0;
 
@@ -164,7 +199,7 @@ public class EsperClient {
                 String car = vehicle.model();
                 String manufacturer = new String();
 
-                String carOwner = faker.name().name();
+                String carOwner = people.get(personIndex);
 
                 Iterator<Map.Entry<String, String[]>> iterator = modelsDict.entrySet().iterator();
                 while (iterator.hasNext()) {
@@ -178,8 +213,10 @@ public class EsperClient {
 
                 }
 
-                String carType = vehicle.carType();
-                String fuelType = vehicle.fuelType();
+//                String carType = vehicle.carType();
+//                String fuelType = vehicle.fuelType();
+                String city = polishCities.get(cityIndex);
+
 
                 String finalManufacturer = manufacturer;
                 Integer finalFine = fine;
@@ -187,9 +224,10 @@ public class EsperClient {
                 record = Format.toJson()
                         .set("car", () -> car)
                         .set("manufacturer", () -> finalManufacturer)
+                        .set("city", () -> city)
                         .set("car_owner", () -> carOwner)
-                        .set("car_type", () -> carType)
-                        .set("fuel_type", () -> fuelType)
+                        /*.set("car_type", () -> carType)
+                        .set("fuel_type", () -> fuelType)*/
                         .set("velocity", () -> velocity)
                         .set("fine", () -> finalFine)
                         .set("penalty_points", () -> finalPenaltyPoints)

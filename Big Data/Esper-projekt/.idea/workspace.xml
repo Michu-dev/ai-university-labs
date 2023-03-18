@@ -5,7 +5,6 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="69b4557e-30be-4883-a4c2-c370d4110a86" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/codeStyles/Project.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
@@ -17,21 +16,7 @@
       <change beforePath="$PROJECT_DIR$/target/classes/KursAkcji.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/KursAkcji.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/Main.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/Main.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/ProstyListener.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ProstyListener.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../SU/lab1/data/1.csv" beforeDir="false" afterPath="$PROJECT_DIR$/../../SU/lab1/data/1.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../SU/lab1/data/10.csv" beforeDir="false" afterPath="$PROJECT_DIR$/../../SU/lab1/data/10.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../SU/lab1/data/11.csv" beforeDir="false" afterPath="$PROJECT_DIR$/../../SU/lab1/data/11.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../SU/lab1/data/12.csv" beforeDir="false" afterPath="$PROJECT_DIR$/../../SU/lab1/data/12.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../SU/lab1/data/13.csv" beforeDir="false" afterPath="$PROJECT_DIR$/../../SU/lab1/data/13.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../SU/lab1/data/2.csv" beforeDir="false" afterPath="$PROJECT_DIR$/../../SU/lab1/data/2.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../SU/lab1/data/3.csv" beforeDir="false" afterPath="$PROJECT_DIR$/../../SU/lab1/data/3.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../SU/lab1/data/4.csv" beforeDir="false" afterPath="$PROJECT_DIR$/../../SU/lab1/data/4.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../SU/lab1/data/5.csv" beforeDir="false" afterPath="$PROJECT_DIR$/../../SU/lab1/data/5.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../SU/lab1/data/6.csv" beforeDir="false" afterPath="$PROJECT_DIR$/../../SU/lab1/data/6.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../SU/lab1/data/7.csv" beforeDir="false" afterPath="$PROJECT_DIR$/../../SU/lab1/data/7.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../SU/lab1/data/8.csv" beforeDir="false" afterPath="$PROJECT_DIR$/../../SU/lab1/data/8.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../SU/lab1/data/9.csv" beforeDir="false" afterPath="$PROJECT_DIR$/../../SU/lab1/data/9.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../SU/lab1/output.csv" beforeDir="false" afterPath="$PROJECT_DIR$/../../SU/lab1/output.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../SU/lab1/solution.py" beforeDir="false" afterPath="$PROJECT_DIR$/../../SU/lab1/solution.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../SU/lab2/generatywne.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/../../SU/lab2/generatywne.ipynb" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -75,9 +60,9 @@
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "WebServerToolWindowFactoryState": "false",
-    "project.structure.last.edited": "Project",
-    "project.structure.proportion": "0.0",
-    "project.structure.side.proportion": "0.0"
+    "project.structure.last.edited": "SDKs",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.2"
   }
 }]]></component>
   <component name="RunManager">
@@ -103,6 +88,7 @@
       <option name="presentableId" value="Default" />
       <updated>1678438371264</updated>
       <workItem from="1678438375169" duration="3721000" />
+      <workItem from="1679035983868" duration="2945000" />
     </task>
     <servers />
   </component>

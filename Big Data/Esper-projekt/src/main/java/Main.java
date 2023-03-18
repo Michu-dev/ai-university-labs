@@ -34,7 +34,9 @@ public class Main {
         configuration.getCommon().addEventType(KursAkcji.class);
         EPRuntime epRuntime = EPRuntimeProvider.getDefaultRuntime(configuration);
 
-        EPDeployment deployment = compileAndDeploy(epRuntime,"select istream spolka, kursOtwarcia - first(kursOtwarcia) AS roznica, data from KursAkcji(spolka='Oracle').win:length(2) group by spolka having kursOtwarcia - first(kursOtwarcia) > 0;");
+        EPDeployment deployment = compileAndDeploy(epRuntime,"""
+            select irstream data, kursZamkniecia, max(kursZamkniecia)
+            from KursAkcji(spolka = 'Oracle')#ext_timed_batch(data.getTime(), 7 days);""");
 
         ProstyListener prostyListener = new ProstyListener();
 

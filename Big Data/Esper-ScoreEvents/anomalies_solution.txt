@@ -1,0 +1,47 @@
+1. SELECT city, MAX(velocity) FROM TrafficEvent#time(300) GROUP BY city;
+
+R: {max(velocity)=149, city=Gdańsk}
+R: {max(velocity)=147, city=Lublin}
+R: {max(velocity)=149, city=Zielona Góra}
+R: {max(velocity)=141, city=Łódź}
+R: {max(velocity)=143, city=Białystok}
+R: {max(velocity)=148, city=Warszawa}
+R: {max(velocity)=137, city=Wrocław}
+R: {max(velocity)=149, city=Poznań}
+R: {max(velocity)=149, city=Zielona Góra}
+R: {max(velocity)=144, city=Katowice}
+R: {max(velocity)=134, city=Bydgoszcz}
+R: {max(velocity)=138, city=Gorzów Wielkopolski}
+R: {max(velocity)=134, city=Bydgoszcz}
+R: {max(velocity)=149, city=Poznań}
+R: {max(velocity)=144, city=Opole}
+R: {max(velocity)=147, city=Lublin}
+R: {max(velocity)=137, city=Wrocław}
+
+2. SELECT car_owner, manufacturer, car, velocity FROM TrafficEvent WHERE velocity >= 100;
+
+R: {velocity=129, car=Odyssey, car_owner=Oliwier Kozłowski, manufacturer=Honda}
+R: {velocity=104, car=Malibu, car_owner=Ambroży Jędrzejewski, manufacturer=Chevy}
+R: {velocity=147, car=MKX, car_owner=Mateusz Kuc, manufacturer=Lincoln}
+R: {velocity=127, car=Silverado, car_owner=Wilhelmina Gruszka, manufacturer=Chevy}
+R: {velocity=122, car=Verano, car_owner=Mojżesz Wojtkowiak, manufacturer=Buick}
+R: {velocity=106, car=Camero, car_owner=Cyrus Kaczmarczyk, manufacturer=Chevy}
+R: {velocity=141, car=Regal, car_owner=Atanazy Miśkiewicz, manufacturer=Buick}
+
+3. SELECT car_owner, SUM(penalty_points) FROM TrafficEvent GROUP BY car_owner HAVING SUM(penalty_points) >= 24; 
+
+R: {sum(penalty_points)=26, car_owner=Róża Więcek}
+R: {sum(penalty_points)=27, car_owner=Gedeon Skibiński}
+R: {sum(penalty_points)=25, car_owner=Eustracjusz Modzelewski}
+R: {sum(penalty_points)=39, car_owner=Eliza Karaś}
+R: {sum(penalty_points)=30, car_owner=Klaudiusz Gąsiorowski}
+R: {sum(penalty_points)=28, car_owner=Jonatan Matuszak}
+R: {sum(penalty_points)=27, car_owner=Kamila Jaworski}
+R: {sum(penalty_points)=24, car_owner=Korneliusz Żurawski}
+R: {sum(penalty_points)=29, car_owner=Ada Górski}
+R: {sum(penalty_points)=30, car_owner=Karolina Olszewski}
+R: {sum(penalty_points)=51, car_owner=Eugenia Adamczak}
+R: {sum(penalty_points)=24, car_owner=Filip Bochenek}
+R: {sum(penalty_points)=30, car_owner=Ludwika Skóra}
+R: {sum(penalty_points)=24, car_owner=Fryderyk Kołodziejski}
+R: {sum(penalty_points)=42, car_owner=Noemi Piechota}
