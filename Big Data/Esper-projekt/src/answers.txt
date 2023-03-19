@@ -1,0 +1,31 @@
+5. select istream data, kursZamkniecia, spolka, max(kursZamkniecia) - kursZamkniecia as roznica
+               from KursAkcji#ext_timed_batch(data.getTime(), 1 day);
+6. select istream data, kursZamkniecia, spolka, max(kursZamkniecia) - kursZamkniecia as roznica
+               from KursAkcji#ext_timed_batch(data.getTime(), 1 day) where spolka in ('Honda', 'IBM', 'Microsoft');
+7. a. select istream data, kursZamkniecia, kursOtwarcia, spolka
+                  from KursAkcji(kursZamkniecia > kursOtwarcia)#length(1);
+   b. public static Boolean closeAndOpenRateCondition(Float kursZamkniecia, Float kursOtwarcia) {
+              return kursZamkniecia > kursOtwarcia;
+          }
+      select istream data, kursZamkniecia, kursOtwarcia, spolka
+                  from KursAkcji(KursAkcji.closeAndOpenRateCondition(kursZamkniecia, kursOtwarcia))#length(1);
+8. select istream data, kursZamkniecia, spolka, MAX(kursZamkniecia) - kursZamkniecia as roznica
+               from KursAkcji(spolka in ('PepsiCo', 'CocaCola'))#ext_timed(data.getTime(), 7 days);
+9. select istream data, kursZamkniecia, spolka
+               from KursAkcji(spolka in ('PepsiCo', 'CocaCola'))#ext_timed_batch(data.getTime(), 1 day)
+               group by data having kursZamkniecia = MAX(kursZamkniecia);
+10. select istream MAX(kursZamkniecia) as maksimum
+                from KursAkcji(spolka = 'IBM')#ext_timed_batch(data.getTime(), 7 days);
+11. select istream c.kursZamkniecia as kursCoc, p.data, p.kursZamkniecia as kursPep
+                from KursAkcji(spolka = 'PepsiCo')#length(1) as p
+                join KursAkcji(spolka = 'CocaCola')#length(1) as c
+                on p.data = c.data where p.kursZamkniecia > c.kursZamkniecia;
+12. select istream k.data, k.kursZamkniecia as kursBiezacy, k.spolka, k.kursZamkniecia - f.kursZamkniecia as roznica
+                from KursAkcji(spolka in ('PepsiCo', 'CocaCola'))#length(1) as k
+                join KursAkcji#firstlength(11) f
+                on k.spolka = f.spolka;
+13. select istream k.data, k.kursZamkniecia as kursBiezacy, k.spolka, k.kursZamkniecia - f.kursZamkniecia as roznica
+                from KursAkcji#length(1) as k
+                join KursAkcji#firstlength(11) f
+                on k.spolka = f.spolka where k.kursZamkniecia > f.kursZamkniecia;
+14.

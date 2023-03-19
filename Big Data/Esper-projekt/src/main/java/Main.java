@@ -35,8 +35,10 @@ public class Main {
         EPRuntime epRuntime = EPRuntimeProvider.getDefaultRuntime(configuration);
 
         EPDeployment deployment = compileAndDeploy(epRuntime,"""
-            select irstream data, kursZamkniecia, max(kursZamkniecia)
-            from KursAkcji(spolka = 'Oracle')#ext_timed_batch(data.getTime(), 7 days);""");
+            select istream k.data, k.kursZamkniecia as kursBiezacy, k.spolka, k.kursZamkniecia - f.kursZamkniecia as roznica
+            from KursAkcji#length(1) as k
+            join KursAkcji#firstlength(11) f
+            on k.spolka = f.spolka where k.kursZamkniecia > f.kursZamkniecia;""");
 
         ProstyListener prostyListener = new ProstyListener();
 

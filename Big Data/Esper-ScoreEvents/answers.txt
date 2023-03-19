@@ -27,14 +27,10 @@ Atrybuty w każdym zdarzeniu mają następujące znaczenie:
   - typ: string
   - znaczenie: imię i nazwisko właściciela pojazdu
   - kategoria: atrybut lub atrybuty dodatkowe, opisujące zdarzenie
-* car_type
+* city
   - typ: string
-  - znaczenie: rodzaj nadwozia pojazdu
+  - znaczenie: miasto, w którym wykonano pomiar (zdjęcie) prędkości pojazdu
   - kategoria: atrybut, lub atrybuty, po których można dane grupować (zawierający ograniczoną liczbę możliwych wartości (5-10)
-* fuel_type
- - typ: string
- - znaczenie: rodzaj paliwa wykorzystywanego przez dany pojazd
- - kategoria: atrybut, lub atrybuty, po których można dane grupować (zawierający ograniczoną liczbę możliwych wartości (5-10)
 * velocity
   - typ: int
   - znaczenie: prędkość pojazdu w punkcie pomiarowym
@@ -61,5 +57,9 @@ Wykrywanie anomalii
 Wykrywaj przypadki przekroczenia prędkości 100 km/h przez danego kierowcę w danym aucie.
 Wykrywanie anomalii oparte na agregacji
 Wykrywaj przypadki zdobycia przez właścicieli pojazdów liczby punktów karnych większej lub równej 24, która oznacza pozbawienie danego kierowcy prawa jazdy.
+Zaawansowana analiza
+Zliczenie, ilu osobom zabrano prawo jazdy za przekroczenie 100 km/h w terenie zabudowanym w ciągu ostatniej minuty (określonego czasu) w poszczególnych miastach.
+Wykorzystanie nazwanego okna do wybrania odpowiednich pomiarów, w których dana osoba przekroczyła 100 km/h. W ostatnim kroku następuje agregacja dla poszczególnych
+miast i zliczenie osób, którym prawo jazdy może zostać zabrane.
 
 

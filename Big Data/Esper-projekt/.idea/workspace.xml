@@ -5,18 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="69b4557e-30be-4883-a4c2-c370d4110a86" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/KursAkcji.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/KursAkcji.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ProstyListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ProstyListener.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/InputStream$InformacjeOPliku.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/InputStream$InformacjeOPliku.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/InputStream$ReverseLineReader.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/InputStream$ReverseLineReader.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/InputStream.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/InputStream.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/KursAkcji.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/KursAkcji.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/Main.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/Main.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ProstyListener.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ProstyListener.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../SU/lab2/generatywne.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/../../SU/lab2/generatywne.ipynb" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -55,16 +48,11 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "WebServerToolWindowFactoryState": "false",
-    "project.structure.last.edited": "SDKs",
-    "project.structure.proportion": "0.15",
-    "project.structure.side.proportion": "0.2"
-  }
-}]]></component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+  </component>
   <component name="RunManager">
     <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="Main" />
@@ -89,6 +77,7 @@
       <updated>1678438371264</updated>
       <workItem from="1678438375169" duration="3721000" />
       <workItem from="1679035983868" duration="2945000" />
+      <workItem from="1679213747533" duration="6572000" />
     </task>
     <servers />
   </component>

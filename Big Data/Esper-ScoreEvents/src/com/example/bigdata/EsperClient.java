@@ -48,7 +48,11 @@ public class EsperClient {
         try {
             epCompiled = compiler.compile("""
                     @public @buseventtype create json schema TrafficEvent(car string, manufacturer string, city string, car_owner string, velocity int, fine int, penalty_points int, ts string);
-                    @name('result') SELECT car_owner, SUM(penalty_points) FROM TrafficEvent GROUP BY car_owner HAVING SUM(penalty_points) >= 24;""", compilerArgs);
+                    create window SpeedLicenseTaken#time(10) as TrafficEvent;
+                                        
+                    on TrafficEvent(velocity > 100) merge SpeedLicenseTaken insert select *;
+                                        
+                    @name('result') select city, count(*) as howMany, ts from SpeedLicenseTaken group by city;""", compilerArgs);
         }
         catch (EPCompileException ex) {
             // handle exception here

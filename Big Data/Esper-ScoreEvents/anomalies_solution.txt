@@ -1,4 +1,6 @@
-1. SELECT city, MAX(velocity) FROM TrafficEvent#time(300) GROUP BY city;
+1. Utrzymuj informacje o maksymalnych zarejestrowanych prędkościach przez poszczególne osoby lub marki pojazdów w ciągu ostatnich 5 minut.
+
+SELECT city, MAX(velocity) FROM TrafficEvent#time(300) GROUP BY city;
 
 R: {max(velocity)=149, city=Gdańsk}
 R: {max(velocity)=147, city=Lublin}
@@ -18,7 +20,9 @@ R: {max(velocity)=144, city=Opole}
 R: {max(velocity)=147, city=Lublin}
 R: {max(velocity)=137, city=Wrocław}
 
-2. SELECT car_owner, manufacturer, car, velocity FROM TrafficEvent WHERE velocity >= 100;
+2. Wykrywaj przypadki przekroczenia prędkości 100 km/h przez danego kierowcę w danym aucie.
+
+SELECT car_owner, manufacturer, car, velocity FROM TrafficEvent WHERE velocity >= 100;
 
 R: {velocity=129, car=Odyssey, car_owner=Oliwier Kozłowski, manufacturer=Honda}
 R: {velocity=104, car=Malibu, car_owner=Ambroży Jędrzejewski, manufacturer=Chevy}
@@ -28,7 +32,9 @@ R: {velocity=122, car=Verano, car_owner=Mojżesz Wojtkowiak, manufacturer=Buick}
 R: {velocity=106, car=Camero, car_owner=Cyrus Kaczmarczyk, manufacturer=Chevy}
 R: {velocity=141, car=Regal, car_owner=Atanazy Miśkiewicz, manufacturer=Buick}
 
-3. SELECT car_owner, SUM(penalty_points) FROM TrafficEvent GROUP BY car_owner HAVING SUM(penalty_points) >= 24; 
+3. Wykrywaj przypadki zdobycia przez właścicieli pojazdów liczby punktów karnych większej lub równej 24, która oznacza pozbawienie danego kierowcy prawa jazdy.
+
+SELECT car_owner, SUM(penalty_points) FROM TrafficEvent GROUP BY car_owner HAVING SUM(penalty_points) >= 24;
 
 R: {sum(penalty_points)=26, car_owner=Róża Więcek}
 R: {sum(penalty_points)=27, car_owner=Gedeon Skibiński}
@@ -45,3 +51,48 @@ R: {sum(penalty_points)=24, car_owner=Filip Bochenek}
 R: {sum(penalty_points)=30, car_owner=Ludwika Skóra}
 R: {sum(penalty_points)=24, car_owner=Fryderyk Kołodziejski}
 R: {sum(penalty_points)=42, car_owner=Noemi Piechota}
+
+4. a) Wybor kierowcow, ktorzy poruszaja sie z wieksza predkoscią, niż średnia prędkość dla danego miasta w ciągu ostatnich 5 minut. Wykorzystanie okna/tabeli dla
+agregacji danych dla poszczególnych miast z ostatnich 5 minut. Następnie następuje złączenie z prostym, ogólnym oknem bieżących danych i wybór kierowców
+na podstawie odpowiedniego warunku.
+
+tabela
+create table CityAverages (city string primary key, avgVelocity avg(integer));
+
+into table CityAverages
+select city, avg(velocity) as avgVelocity
+from TrafficEvent#time(3) group by city;
+
+select car_owner, car, manufacturer, t.city, velocity, avgVelocity
+from TrafficEvent t join CityAverages c on t.city = c.city
+where velocity > avgVelocity;
+
+R: {avgVelocity=65.75, car=Encore, car_owner=Arystarch Dubiel, velocity=119, t.city=Zielona Góra, manufacturer=Buick}
+R: {avgVelocity=75.16666666666667, car=CR-V, car_owner=Abraham Grześkowiak, velocity=87, t.city=Warszawa, manufacturer=Honda}
+R: {avgVelocity=70.5, car=Ram, car_owner=Jan Kawa, velocity=140, t.city=Opole, manufacturer=Dodge}
+R: {avgVelocity=76.16666666666667, car=Verano, car_owner=Alfred Tomaszewski, velocity=110, t.city=Gdańsk, manufacturer=Buick}
+R: {avgVelocity=71.6, car=MKX, car_owner=Lilla Nowicki, velocity=76, t.city=Opole, manufacturer=Lincoln}
+R: {avgVelocity=97.25, car=Camero, car_owner=Noemi Sławiński, velocity=123, t.city=Toruń, manufacturer=Chevy}
+R: {avgVelocity=77.5, car=S5, car_owner=Daniel Sadowski, velocity=133, t.city=Szczecin, manufacturer=Audi}
+R: {avgVelocity=80.75, car=Fiesta, car_owner=Dariusz Flak, velocity=100, t.city=Lublin, manufacturer=Ford}
+R: {avgVelocity=65.83333333333333, car=Cube, car_owner=Ludwik Borek, velocity=112, t.city=Gorzów Wielkopolski, manufacturer=Nissan}
+
+b) Zliczenie, ilu osobom zabrano prawo jazdy za przekroczenie 100 km/h w terenie zabudowanym w ciągu ostatniej minuty (określonego czasu) w poszczególnych miastach.
+Wykorzystanie nazwanego okna do wybrania odpowiednich pomiarów, w których dana osoba przekroczyła 100 km/h. W ostatnim kroku następuje agregacja dla poszczególnych
+miast i zliczenie osób, którym prawo jazdy może zostać zabrane.
+
+nazwane okno
+create window SpeedLicenseTaken#time(3) as TrafficEvent;
+
+on TrafficEvent(velocity > 100) merge SpeedLicenseTaken insert select *;
+
+@name('result') select city, count(*) as howMany, ts from SpeedLicenseTaken group by city;
+
+R: {howMany=5, city=Szczecin, ts=2023-03-19 12:28:15.061}
+R: {howMany=3, city=Opole, ts=2023-03-19 12:28:28.124}
+R: {howMany=8, city=Zielona Góra, ts=2023-03-19 12:28:14.253}
+R: {howMany=7, city=Łódź, ts=2023-03-19 12:28:06.936}
+R: {howMany=7, city=Wrocław, ts=2023-03-19 12:27:56.253}
+R: {howMany=8, city=Łódź, ts=2023-03-19 12:28:36.222}
+R: {howMany=2, city=Kielce, ts=2023-03-19 12:27:55.491}
+
