@@ -1,4 +1,4 @@
-1. Utrzymuj informacje o maksymalnych zarejestrowanych prędkościach przez poszczególne osoby lub marki pojazdów w ciągu ostatnich 5 minut.
+1. Utrzymuj informacje o maksymalnych zarejestrowanych prędkościach w poszczególnych miastach w ciągu ostatnich 5 minut.
 
 SELECT city, MAX(velocity) FROM TrafficEvent#time(300) GROUP BY city;
 
@@ -52,8 +52,8 @@ R: {sum(penalty_points)=30, car_owner=Ludwika Skóra}
 R: {sum(penalty_points)=24, car_owner=Fryderyk Kołodziejski}
 R: {sum(penalty_points)=42, car_owner=Noemi Piechota}
 
-4. a) Wybor kierowcow, ktorzy poruszaja sie z wieksza predkoscią, niż średnia prędkość dla danego miasta w ciągu ostatnich 5 minut. Wykorzystanie okna/tabeli dla
-agregacji danych dla poszczególnych miast z ostatnich 5 minut. Następnie następuje złączenie z prostym, ogólnym oknem bieżących danych i wybór kierowców
+4. a) Wybór kierowców, którzy poruszają się z większą prędkoscią, niż średnia prędkość dla danego miasta w ciągu ostatnich np. 5 minut. Wykorzystanie okna/tabeli
+dla agregacji danych dla poszczególnych miast z ostatnich 5 minut. Następnie następuje złączenie z prostym, ogólnym oknem bieżących danych i wybór kierowców
 na podstawie odpowiedniego warunku.
 
 tabela
@@ -61,7 +61,7 @@ create table CityAverages (city string primary key, avgVelocity avg(integer));
 
 into table CityAverages
 select city, avg(velocity) as avgVelocity
-from TrafficEvent#time(3) group by city;
+from TrafficEvent#time(300) group by city;
 
 select car_owner, car, manufacturer, t.city, velocity, avgVelocity
 from TrafficEvent t join CityAverages c on t.city = c.city
@@ -77,12 +77,12 @@ R: {avgVelocity=77.5, car=S5, car_owner=Daniel Sadowski, velocity=133, t.city=Sz
 R: {avgVelocity=80.75, car=Fiesta, car_owner=Dariusz Flak, velocity=100, t.city=Lublin, manufacturer=Ford}
 R: {avgVelocity=65.83333333333333, car=Cube, car_owner=Ludwik Borek, velocity=112, t.city=Gorzów Wielkopolski, manufacturer=Nissan}
 
-b) Zliczenie, ilu osobom zabrano prawo jazdy za przekroczenie 100 km/h w terenie zabudowanym w ciągu ostatniej minuty (określonego czasu) w poszczególnych miastach.
+b) Zliczenie, ilu osobom zabrano prawo jazdy za przekroczenie 100 km/h w terenie zabudowanym w ciągu ostatnich 5 minut (określonego czasu) w poszczególnych miastach.
 Wykorzystanie nazwanego okna do wybrania odpowiednich pomiarów, w których dana osoba przekroczyła 100 km/h. W ostatnim kroku następuje agregacja dla poszczególnych
 miast i zliczenie osób, którym prawo jazdy może zostać zabrane.
 
 nazwane okno
-create window SpeedLicenseTaken#time(3) as TrafficEvent;
+create window SpeedLicenseTaken#time(300) as TrafficEvent;
 
 on TrafficEvent(velocity > 100) merge SpeedLicenseTaken insert select *;
 
