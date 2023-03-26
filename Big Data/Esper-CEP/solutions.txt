@@ -1,0 +1,20 @@
+1. select * from Ticker#length(10) match_recognize (
+     partition by symbol
+     measures st.symbol AS symbol,
+     st.price as startPrice,
+     LAST(low.price) as lowPrice,
+     LAST(high.price) as highPrice,
+     st.tstamp AS startT,
+     LAST(high.tstamp) AS stopT
+     pattern (st low+ high+)
+     define
+     low as low.price < PREV(low.price),
+     high as high.price > PREV(high.price)
+    );
+2. select a.* from pattern[ every a=AcmeTicker(price=25) ];
+3. select a.tstamp, b.price - a.price AS diff, b.tstamp from pattern[ every a=AcmeTicker() -> b=AcmeTicker() ];
+4. select a.tstamp, b.price - a.price AS diff, b.tstamp from pattern[ every a=AcmeTicker() -> b=AcmeTicker() ] where b.price < a.price;
+5. select a.tstamp, b.price, a.price, b.tstamp from pattern[ every a=AcmeTicker(price > 23) -> b=AcmeTicker(price > 23) ];
+6. select a.tstamp, b.price, a.price, b.tstamp from pattern[ every a=AcmeTicker(price > 23) -> b=AcmeTicker(price > 23) where timer:within(2) and not AcmeTicker(price < 14) ];
+7. select a[0].price as p1, a[0].tstamp as tstart, a[1].price as p2, a[2].price as p3 from pattern[ [3] a=AcmeTicker(price >= 20) ];
+
