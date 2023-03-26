@@ -1,31 +1,116 @@
 from pulp import *
 import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+from collections import defaultdict
+
+CRITERIA_NUMBER = 4
+# pairs: (11, 22), (4, 27), (18, 27), (8, 23), (10, 19)
+
+variants = {
+    11: [0.61, 0.54, 0.38, 0.49], # 1
+    22: [0.32, 0.83, 0, 0.94], # 0
+    4: [0.48, 0.87, 0, 0.75], # 0
+    27: [0.8, 0.06, 1, 0.67], # 0.5
+    18: [0.76, 0.06, 1, 0.06], # 1
+    27: [0.8, 0.06, 1, 0.67], # 0.5
+    8: [0.64, 0.44, 0.54, 0.54], # 1
+    23: [0.59, 0.24, 0.7, 0.63], # 0.5
+    10: [0.45, 0.86, 0, 0.73], # 0.5
+    19: [0.35, 0.91, 0, 0.98] # 0
+}
+
+# 11, 18, 8
+# 27, 23, 10
+# 22, 4, 19
+
+# 11, 10, 8, 23, 4, 22, 19, 18, 27
 
 # Utworzenie instancji problemu
-model = LpProblem(name="jakis-problem", sense=LpMaximize)
+model = LpProblem(name="Nuclear-waste-management-UTA", sense=LpMaximize)
 
 # Utworzenie czterech zmiennych decyzyjnych
 epsilon = LpVariable(name="epsilon", lowBound=0, cat='Continuous')
-w1 = LpVariable(name="w1", lowBound=0, cat='Continuous')
-w2 = LpVariable(name="w2", lowBound=0, cat='Continuous')
-w3 = LpVariable(name="w3", lowBound=0, cat='Continuous')
-w4 = LpVariable(name="w4", lowBound=0, cat='Continuous')
+u_variables = defaultdict(lambda: {})
+
+for v in variants:
+    for i in range(CRITERIA_NUMBER):
+        val = variants[v][i]
+        u_variables[i][val] = LpVariable(name=f"u_{i}_{val}", lowBound=0, cat='Continuous')
+
+ideal_utilities = [LpVariable(name=f"weight_{i}_0", lowBound=0, cat='Continuous') for i in range(CRITERIA_NUMBER)]
+worst_utilities = [LpVariable(name=f"weight_{i}_1", lowBound=0, cat='Continuous') for i in range(CRITERIA_NUMBER)]
+
+
 
 # Ograniczenia problemu
-model += (0.45*w1 + 0.86*w2 + 0*w3 + 0.73*w4 >= 0.83*w1 + 0.25*w2 + 0.8*w3 + 0.65*w4 + epsilon, "#1 constraint")
-model += (1*w1 + 0.45*w2 + 0.57*w3 + 0.5*w4 >= 0.71*w1 + 0.25*w2 + 0.88*w3 + 0.67*w4 + epsilon, "#2 constraint")
-# model += (0.74*w1 + 0.25*w2 + 0.8*w3 + 0.49*w4 >= 0.83*w1 + 0.25*w2 + 0.8*w3 + 0.65*w4 + epsilon, "#3 constraint")
-# model += (1*w1 + 0.45*w2 + 0.57*w3 + 0.5*w4 + epsilon >= 0.76*w1 + 0.06*w2 + 1*w3 + 0.6*w4, "#4 constraint")
-# model += (0.32*w1 + 0.83*w2 + 0*w3 + 0.94*w4 + epsilon >= 0.59*w1 + 0.24*w2 + 0.7*w3 + 0.63*w4, "#5 constraint")
-# model += (w1 + w2 + w3 + w4 == 1, "#6 constraint")
-# model += (w1 >= 0, "#7 constraint")
-# model += (w2 >= 0, "#8 constraint")
-# model += (w3 >= 0, "#9 constraint")
-# model += (w4 >= 1, "#10 constraint")
+# normalizacja
+model += (sum(ideal_utilities[i] for i in range(CRITERIA_NUMBER)) == 1, "normalization")
+for i in range(CRITERIA_NUMBER):
+    model += (worst_utilities[i] == 0, f"normalization_{i}")
 
+# ranking referencyjny
+model += (
+    sum(u_variables[i][variants[11][i]] for i in range(CRITERIA_NUMBER)) >= sum(
+    u_variables[i][variants[10][i]] for i in range(CRITERIA_NUMBER)
+    ) + epsilon, '11 >= 10'
+)
+
+
+model += (
+    sum(u_variables[i][variants[10][i]] for i in range(CRITERIA_NUMBER)) >= sum(
+    u_variables[i][variants[8][i]] for i in range(CRITERIA_NUMBER)
+    ) + epsilon, '10 >= 8 (1 group preference information)'
+)
+
+model += (
+    sum(u_variables[i][variants[8][i]] for i in range(CRITERIA_NUMBER)) >= sum(
+    u_variables[i][variants[23][i]] for i in range(CRITERIA_NUMBER)
+    ) + epsilon, '8 >= 23 (4 group preference information)'
+)
+
+model += (
+    sum(u_variables[i][variants[23][i]] for i in range(CRITERIA_NUMBER)) >= sum(
+    u_variables[i][variants[4][i]] for i in range(CRITERIA_NUMBER)
+    ) + epsilon, '23 >= 4 (2 group preference information)'
+)
+
+model += (
+    sum(u_variables[i][variants[4][i]] for i in range(CRITERIA_NUMBER)) >= sum(
+    u_variables[i][variants[22][i]] for i in range(CRITERIA_NUMBER)
+    ) + epsilon, '4 >= 22 (4 group preference information)'
+)
+
+model += (
+    sum(u_variables[i][variants[22][i]] for i in range(CRITERIA_NUMBER)) >= sum(
+    u_variables[i][variants[19][i]] for i in range(CRITERIA_NUMBER)
+    ) + epsilon, '22 >= 19 (4 group preference information)'
+)
+
+model += (
+    sum(u_variables[i][variants[19][i]] for i in range(CRITERIA_NUMBER)) >= sum(
+    u_variables[i][variants[18][i]] for i in range(CRITERIA_NUMBER)
+    ) + epsilon, '19 >= 18 (4 group preference information)'
+)
+
+model += (
+    sum(u_variables[i][variants[18][i]] for i in range(CRITERIA_NUMBER)) >= sum(
+    u_variables[i][variants[27][i]] for i in range(CRITERIA_NUMBER)
+    ) + epsilon, '18 >= 27 (4 group preference information)'
+)
+
+
+for i in range(CRITERIA_NUMBER):
+    sorted_keys = sorted(u_variables[i].keys())
+    for j in range(len(sorted_keys) - 1):
+        model += (u_variables[i][sorted_keys[j]] >= u_variables[i][sorted_keys[j + 1]], f"weight_{i}_{sorted_keys[j]} >= weight_{i}_{sorted_keys[j + 1]}")
+    model += (u_variables[i][sorted_keys[0]] <= ideal_utilities[i], f"weight_{i}_0 >= weight_{i}_{sorted_keys[0]}")
+    model += (u_variables[i][sorted_keys[len(sorted_keys ) - 1]] >= worst_utilities[i], f"weight_{i}_{sorted_keys[len(sorted_keys ) - 1]} >= weight_{i}_1")
 
 # Funkcja celu 
 obj_func = epsilon
+
+
 model += obj_func
 
 # Uruchomienie solvera
@@ -39,11 +124,27 @@ print(f"status: {model.status}, {LpStatus[model.status]}")
 print(f"objective: {model.objective.value()}")
 # WYNIK: objective: 12.000000199999999
 
+criteria_plots = {}
 # Wypisanie wartosci zmiennych decyzyjnych
-print("w1: ", w1.value())
-print("w2: ", w2.value())
-print("w3: ", w3.value())
-print("w4: ", w4.value())
+for i in range(CRITERIA_NUMBER):
+    sorted_keys = sorted(u_variables[i].keys())
+    for j in sorted_keys:
+        if i not in criteria_plots:
+            criteria_plots[i] = [(j, u_variables[i][j].value())]
+        else:
+            criteria_plots[i].append((j, u_variables[i][j].value()))
+        print(f"weight_{i}_{j}: ", u_variables[i][j].value())
+
+# Rysowanie wykresów funkcji użyteczności
+for i in range(CRITERIA_NUMBER):
+    x = [tup[0] for tup in criteria_plots[i]]
+    y = [tup[1] for tup in criteria_plots[i]]
+    print(x)
+    print(y)
+    plt.subplot(2, 2, i + 1)
+    plt.plot(x, y)
+
+plt.show()
 # WYNIK
 #    1.6666667
 #    2.6666667
