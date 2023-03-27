@@ -25,6 +25,8 @@ variants = {
 # 22, 4, 19
 
 # 11, 10, 8, 23, 4, 22, 19, 18, 27
+# 11 == 10 > 8 (3 grupa) > 23 (3 grupa) > 4 (2 grupa) > 22 (4 grupa) == 19 > 18 (3 grupa) > 27 (dominacja) 
+# 11 == 10 > 4 (4 grupa) > 22 (4 grupa) > 19 (4 grupa) > 8 (3, 4 grupa) == 18 > 23 (3, 4 grupa) > 27 (3, 4 grupa) 
 
 # Utworzenie instancji problemu
 model = LpProblem(name="Nuclear-waste-management-UTA", sense=LpMaximize)
@@ -49,30 +51,22 @@ model += (sum(ideal_utilities[i] for i in range(CRITERIA_NUMBER)) == 1, "normali
 for i in range(CRITERIA_NUMBER):
     model += (worst_utilities[i] == 0, f"normalization_{i}")
 
+for i in range(CRITERIA_NUMBER):
+    model += (sum(u_variables[i][variants[j][i]] for j in variants) <= 0.5, f"u_{i} <= 0.5")
+
 # ranking referencyjny
+# 11 == 10 > 4 (4 grupa) > 22 (4 grupa) > 19 (4 grupa) > 8 (3, 4 grupa) == 18 > 23 (3, 4 grupa) > 27 (3, 4 grupa)
 model += (
-    sum(u_variables[i][variants[11][i]] for i in range(CRITERIA_NUMBER)) >= sum(
+    sum(u_variables[i][variants[11][i]] for i in range(CRITERIA_NUMBER)) == sum(
     u_variables[i][variants[10][i]] for i in range(CRITERIA_NUMBER)
-    ) + epsilon, '11 >= 10'
+    ) + epsilon, '11 == 10'
 )
 
 
 model += (
     sum(u_variables[i][variants[10][i]] for i in range(CRITERIA_NUMBER)) >= sum(
-    u_variables[i][variants[8][i]] for i in range(CRITERIA_NUMBER)
-    ) + epsilon, '10 >= 8 (1 group preference information)'
-)
-
-model += (
-    sum(u_variables[i][variants[8][i]] for i in range(CRITERIA_NUMBER)) >= sum(
-    u_variables[i][variants[23][i]] for i in range(CRITERIA_NUMBER)
-    ) + epsilon, '8 >= 23 (4 group preference information)'
-)
-
-model += (
-    sum(u_variables[i][variants[23][i]] for i in range(CRITERIA_NUMBER)) >= sum(
     u_variables[i][variants[4][i]] for i in range(CRITERIA_NUMBER)
-    ) + epsilon, '23 >= 4 (2 group preference information)'
+    ) + epsilon, '10 >= 4 (4 group preference information)'
 )
 
 model += (
@@ -89,14 +83,26 @@ model += (
 
 model += (
     sum(u_variables[i][variants[19][i]] for i in range(CRITERIA_NUMBER)) >= sum(
+    u_variables[i][variants[8][i]] for i in range(CRITERIA_NUMBER)
+    ) + epsilon, '19 >= 8 (1 group preference information)'
+)
+
+model += (
+    sum(u_variables[i][variants[8][i]] for i in range(CRITERIA_NUMBER)) == sum(
     u_variables[i][variants[18][i]] for i in range(CRITERIA_NUMBER)
-    ) + epsilon, '19 >= 18 (4 group preference information)'
+    ) + epsilon, '8 == 18'
 )
 
 model += (
     sum(u_variables[i][variants[18][i]] for i in range(CRITERIA_NUMBER)) >= sum(
+    u_variables[i][variants[23][i]] for i in range(CRITERIA_NUMBER)
+    ) + epsilon, '18 >= 23 (1 group preference information)'
+)
+
+model += (
+    sum(u_variables[i][variants[23][i]] for i in range(CRITERIA_NUMBER)) >= sum(
     u_variables[i][variants[27][i]] for i in range(CRITERIA_NUMBER)
-    ) + epsilon, '18 >= 27 (4 group preference information)'
+    ) + epsilon, '23 >= 27 (1 group preference information)'
 )
 
 
@@ -135,6 +141,16 @@ for i in range(CRITERIA_NUMBER):
             criteria_plots[i].append((j, u_variables[i][j].value()))
         print(f"weight_{i}_{j}: ", u_variables[i][j].value())
 
+variants_uta_values = defaultdict(lambda: 0)
+for v in variants:
+    for i in range(CRITERIA_NUMBER):
+        # if v not in variants_uta_values:
+        variants_uta_values[v] += u_variables[i][variants[v][i]].value()
+
+print('UTA values: ')
+for k in variants_uta_values.keys():
+    print(str(k) + ': ' + str(variants_uta_values[k]))
+
 # Rysowanie wykresów funkcji użyteczności
 for i in range(CRITERIA_NUMBER):
     x = [tup[0] for tup in criteria_plots[i]]
@@ -142,8 +158,10 @@ for i in range(CRITERIA_NUMBER):
     print(x)
     print(y)
     plt.subplot(2, 2, i + 1)
+    plt.title(f"{i + 1} criteria")
     plt.plot(x, y)
 
+plt.tight_layout()
 plt.show()
 # WYNIK
 #    1.6666667
