@@ -28,6 +28,12 @@ variants = {
 # 11 == 10 > 8 (3 grupa) > 23 (3 grupa) > 4 (2 grupa) > 22 (4 grupa) == 19 > 18 (3 grupa) > 27 (dominacja) 
 # 11 == 10 > 4 (4 grupa) > 22 (4 grupa) > 19 (4 grupa) > 8 (3, 4 grupa) == 18 > 23 (3, 4 grupa) > 27 (3, 4 grupa) 
 
+# UTA GMS
+# 11 > 22 (3 i 4 kryterium), 4 > 27 (3 i 4), 18 > 27 (4), 8 > 23 (3, 4), 10 > 19 (4)
+# 11 == 4, 22 > 27 (3, 4), 18 == 8, 23 > 27 (3, 4), 10 > 19 (4)
+# 11 > 27 (3, 4), 18 > 23 (4), 8 == 19, 4 > 27 (3, 4), 10 > 22 (4)
+# 11 > 19 (3, 4), 10 > 22 (4), 4 > 23 (3, 4), 8 > 27 (3, 4), 18 > 27 (4) 
+
 # Utworzenie instancji problemu
 model = LpProblem(name="Nuclear-waste-management-UTA", sense=LpMaximize)
 
@@ -54,115 +60,208 @@ for i in range(CRITERIA_NUMBER):
 for i in range(CRITERIA_NUMBER):
     model += (sum(u_variables[i][variants[j][i]] for j in variants) <= 0.5, f"u_{i} <= 0.5")
 
-# ranking referencyjny
-# 11 == 10 > 4 (4 grupa) > 22 (4 grupa) > 19 (4 grupa) > 8 (3, 4 grupa) == 18 > 23 (3, 4 grupa) > 27 (3, 4 grupa)
-model += (
-    sum(u_variables[i][variants[11][i]] for i in range(CRITERIA_NUMBER)) == sum(
-    u_variables[i][variants[10][i]] for i in range(CRITERIA_NUMBER)
-    ) + epsilon, '11 == 10'
-)
+def uta():
+    # ranking referencyjny
+    # 11 == 10 > 4 (4 grupa) > 22 (4 grupa) > 19 (4 grupa) > 8 (3, 4 grupa) == 18 > 23 (3, 4 grupa) > 27 (3, 4 grupa)
+    global model
+    model += (
+        sum(u_variables[i][variants[11][i]] for i in range(CRITERIA_NUMBER)) == sum(
+        u_variables[i][variants[10][i]] for i in range(CRITERIA_NUMBER)
+        ) + epsilon, '11 == 10'
+    )
 
 
-model += (
-    sum(u_variables[i][variants[10][i]] for i in range(CRITERIA_NUMBER)) >= sum(
-    u_variables[i][variants[4][i]] for i in range(CRITERIA_NUMBER)
-    ) + epsilon, '10 >= 4 (4 group preference information)'
-)
+    model += (
+        sum(u_variables[i][variants[10][i]] for i in range(CRITERIA_NUMBER)) >= sum(
+        u_variables[i][variants[4][i]] for i in range(CRITERIA_NUMBER)
+        ) + epsilon, '10 >= 4 (4 group preference information)'
+    )
 
-model += (
-    sum(u_variables[i][variants[4][i]] for i in range(CRITERIA_NUMBER)) >= sum(
-    u_variables[i][variants[22][i]] for i in range(CRITERIA_NUMBER)
-    ) + epsilon, '4 >= 22 (4 group preference information)'
-)
+    model += (
+        sum(u_variables[i][variants[4][i]] for i in range(CRITERIA_NUMBER)) >= sum(
+        u_variables[i][variants[22][i]] for i in range(CRITERIA_NUMBER)
+        ) + epsilon, '4 >= 22 (4 group preference information)'
+    )
 
-model += (
-    sum(u_variables[i][variants[22][i]] for i in range(CRITERIA_NUMBER)) >= sum(
-    u_variables[i][variants[19][i]] for i in range(CRITERIA_NUMBER)
-    ) + epsilon, '22 >= 19 (4 group preference information)'
-)
+    model += (
+        sum(u_variables[i][variants[22][i]] for i in range(CRITERIA_NUMBER)) >= sum(
+        u_variables[i][variants[19][i]] for i in range(CRITERIA_NUMBER)
+        ) + epsilon, '22 >= 19 (4 group preference information)'
+    )
 
-model += (
-    sum(u_variables[i][variants[19][i]] for i in range(CRITERIA_NUMBER)) >= sum(
-    u_variables[i][variants[8][i]] for i in range(CRITERIA_NUMBER)
-    ) + epsilon, '19 >= 8 (1 group preference information)'
-)
+    model += (
+        sum(u_variables[i][variants[19][i]] for i in range(CRITERIA_NUMBER)) >= sum(
+        u_variables[i][variants[8][i]] for i in range(CRITERIA_NUMBER)
+        ) + epsilon, '19 >= 8 (1 group preference information)'
+    )
 
-model += (
-    sum(u_variables[i][variants[8][i]] for i in range(CRITERIA_NUMBER)) == sum(
-    u_variables[i][variants[18][i]] for i in range(CRITERIA_NUMBER)
-    ) + epsilon, '8 == 18'
-)
+    model += (
+        sum(u_variables[i][variants[8][i]] for i in range(CRITERIA_NUMBER)) == sum(
+        u_variables[i][variants[18][i]] for i in range(CRITERIA_NUMBER)
+        ) + epsilon, '8 == 18'
+    )
 
-model += (
-    sum(u_variables[i][variants[18][i]] for i in range(CRITERIA_NUMBER)) >= sum(
-    u_variables[i][variants[23][i]] for i in range(CRITERIA_NUMBER)
-    ) + epsilon, '18 >= 23 (1 group preference information)'
-)
+    model += (
+        sum(u_variables[i][variants[18][i]] for i in range(CRITERIA_NUMBER)) >= sum(
+        u_variables[i][variants[23][i]] for i in range(CRITERIA_NUMBER)
+        ) + epsilon, '18 >= 23 (1 group preference information)'
+    )
 
-model += (
-    sum(u_variables[i][variants[23][i]] for i in range(CRITERIA_NUMBER)) >= sum(
-    u_variables[i][variants[27][i]] for i in range(CRITERIA_NUMBER)
-    ) + epsilon, '23 >= 27 (1 group preference information)'
-)
+    model += (
+        sum(u_variables[i][variants[23][i]] for i in range(CRITERIA_NUMBER)) >= sum(
+        u_variables[i][variants[27][i]] for i in range(CRITERIA_NUMBER)
+        ) + epsilon, '23 >= 27 (1 group preference information)'
+    )
 
-
-for i in range(CRITERIA_NUMBER):
-    sorted_keys = sorted(u_variables[i].keys())
-    for j in range(len(sorted_keys) - 1):
-        model += (u_variables[i][sorted_keys[j]] >= u_variables[i][sorted_keys[j + 1]], f"weight_{i}_{sorted_keys[j]} >= weight_{i}_{sorted_keys[j + 1]}")
-    model += (u_variables[i][sorted_keys[0]] <= ideal_utilities[i], f"weight_{i}_0 >= weight_{i}_{sorted_keys[0]}")
-    model += (u_variables[i][sorted_keys[len(sorted_keys ) - 1]] >= worst_utilities[i], f"weight_{i}_{sorted_keys[len(sorted_keys ) - 1]} >= weight_{i}_1")
-
-# Funkcja celu 
-obj_func = epsilon
-
-
-model += obj_func
-
-# Uruchomienie solvera
-status = model.solve()
-
-# Wypisanie statusu
-print(f"status: {model.status}, {LpStatus[model.status]}")
-
-# WYNIK: status: 1, Optimal
-# Wypisanie realizacji funkcji celu
-print(f"objective: {model.objective.value()}")
-# WYNIK: objective: 12.000000199999999
-
-criteria_plots = {}
-# Wypisanie wartosci zmiennych decyzyjnych
-for i in range(CRITERIA_NUMBER):
-    sorted_keys = sorted(u_variables[i].keys())
-    for j in sorted_keys:
-        if i not in criteria_plots:
-            criteria_plots[i] = [(j, u_variables[i][j].value())]
-        else:
-            criteria_plots[i].append((j, u_variables[i][j].value()))
-        print(f"weight_{i}_{j}: ", u_variables[i][j].value())
-
-variants_uta_values = defaultdict(lambda: 0)
-for v in variants:
     for i in range(CRITERIA_NUMBER):
-        # if v not in variants_uta_values:
-        variants_uta_values[v] += u_variables[i][variants[v][i]].value()
+        sorted_keys = sorted(u_variables[i].keys())
+        for j in range(len(sorted_keys) - 1):
+            model += (u_variables[i][sorted_keys[j]] >= u_variables[i][sorted_keys[j + 1]], f"weight_{i}_{sorted_keys[j]} >= weight_{i}_{sorted_keys[j + 1]}")
+        model += (u_variables[i][sorted_keys[0]] <= ideal_utilities[i], f"weight_{i}_0 >= weight_{i}_{sorted_keys[0]}")
+        model += (u_variables[i][sorted_keys[len(sorted_keys ) - 1]] >= worst_utilities[i], f"weight_{i}_{sorted_keys[len(sorted_keys ) - 1]} >= weight_{i}_1")
 
-print('UTA values: ')
-for k in variants_uta_values.keys():
-    print(str(k) + ': ' + str(variants_uta_values[k]))
+    # Funkcja celu 
+    obj_func = epsilon
 
-# Rysowanie wykresów funkcji użyteczności
-for i in range(CRITERIA_NUMBER):
-    x = [tup[0] for tup in criteria_plots[i]]
-    y = [tup[1] for tup in criteria_plots[i]]
-    print(x)
-    print(y)
-    plt.subplot(2, 2, i + 1)
-    plt.title(f"{i + 1} criteria")
-    plt.plot(x, y)
 
-plt.tight_layout()
-plt.show()
-# WYNIK
-#    1.6666667
-#    2.6666667
+    model += obj_func
+
+    # Uruchomienie solvera
+    status = model.solve()
+
+    # Wypisanie statusu
+    print(f"status: {model.status}, {LpStatus[model.status]}")
+
+    # WYNIK: status: 1, Optimal
+    # Wypisanie realizacji funkcji celu
+    print(f"objective: {model.objective.value()}")
+    # WYNIK: objective: 12.000000199999999
+
+    criteria_plots = {}
+    # Wypisanie wartosci zmiennych decyzyjnych
+    for i in range(CRITERIA_NUMBER):
+        sorted_keys = sorted(u_variables[i].keys())
+        for j in sorted_keys:
+            if i not in criteria_plots:
+                criteria_plots[i] = [(j, u_variables[i][j].value())]
+            else:
+                criteria_plots[i].append((j, u_variables[i][j].value()))
+            print(f"weight_{i}_{j}: ", u_variables[i][j].value())
+
+    variants_uta_values = defaultdict(lambda: 0)
+    for v in variants:
+        for i in range(CRITERIA_NUMBER):
+            # if v not in variants_uta_values:
+            variants_uta_values[v] += u_variables[i][variants[v][i]].value()
+
+    print('UTA values: ')
+    for k in variants_uta_values.keys():
+        print(str(k) + ': ' + str(variants_uta_values[k]))
+
+    # Rysowanie wykresów funkcji użyteczności
+    for i in range(CRITERIA_NUMBER):
+        x = [tup[0] for tup in criteria_plots[i]]
+        y = [tup[1] for tup in criteria_plots[i]]
+        print(x)
+        print(y)
+        plt.subplot(2, 2, i + 1)
+        plt.title(f"{i + 1} criteria")
+        plt.plot(x, y)
+
+    plt.tight_layout()
+    plt.show()
+
+
+def uta_gms(pairs):
+    global model
+
+    for pair in pairs:
+        if pair[2] == 1:
+            model += (
+                sum(u_variables[i][variants[pair[0]][i]] for i in range(CRITERIA_NUMBER)) == sum(
+                u_variables[i][variants[pair[1]][i]] for i in range(CRITERIA_NUMBER)
+                ) + epsilon, f'{pair[0]} == {pair[1]}'
+            )
+        elif pair[2] == 0:
+            model += (
+                sum(u_variables[i][variants[pair[0]][i]] for i in range(CRITERIA_NUMBER)) >= sum(
+                u_variables[i][variants[pair[1]][i]] for i in range(CRITERIA_NUMBER)
+                ) + epsilon, f'{pair[0]} >= {pair[1]}'
+            )
+    for i in range(CRITERIA_NUMBER):
+        sorted_keys = sorted(u_variables[i].keys())
+        for j in range(len(sorted_keys) - 1):
+            model += (u_variables[i][sorted_keys[j]] >= u_variables[i][sorted_keys[j + 1]], f"weight_{i}_{sorted_keys[j]} >= weight_{i}_{sorted_keys[j + 1]}")
+        model += (u_variables[i][sorted_keys[0]] <= ideal_utilities[i], f"weight_{i}_0 >= weight_{i}_{sorted_keys[0]}")
+        model += (u_variables[i][sorted_keys[len(sorted_keys ) - 1]] >= worst_utilities[i], f"weight_{i}_{sorted_keys[len(sorted_keys ) - 1]} >= weight_{i}_1")
+
+    # Funkcja celu 
+    obj_func = epsilon
+
+
+    model += obj_func
+
+    # Uruchomienie solvera
+    status = model.solve()
+
+    # Wypisanie statusu
+    print(f"status: {model.status}, {LpStatus[model.status]}")
+
+    # WYNIK: status: 1, Optimal
+    # Wypisanie realizacji funkcji celu
+    print(f"objective: {model.objective.value()}")
+    # WYNIK: objective: 12.000000199999999
+
+    criteria_plots = {}
+    # Wypisanie wartosci zmiennych decyzyjnych
+    for i in range(CRITERIA_NUMBER):
+        sorted_keys = sorted(u_variables[i].keys())
+        for j in sorted_keys:
+            if i not in criteria_plots:
+                criteria_plots[i] = [(j, u_variables[i][j].value())]
+            else:
+                criteria_plots[i].append((j, u_variables[i][j].value()))
+            print(f"weight_{i}_{j}: ", u_variables[i][j].value())
+
+    variants_uta_values = defaultdict(lambda: 0)
+    for v in variants:
+        for i in range(CRITERIA_NUMBER):
+            # if v not in variants_uta_values:
+            variants_uta_values[v] += u_variables[i][variants[v][i]].value()
+
+    variants_uta_values = dict(sorted(variants_uta_values.items(), key=lambda x:x[1], reverse=True))
+    print('UTA values: ')
+    for k in variants_uta_values.keys():
+        print(str(k) + ': ' + str(variants_uta_values[k]))
+
+    # Rysowanie wykresów funkcji użyteczności
+    for i in range(CRITERIA_NUMBER):
+        x = [tup[0] for tup in criteria_plots[i]]
+        y = [tup[1] for tup in criteria_plots[i]]
+        print(x)
+        print(y)
+        plt.subplot(2, 2, i + 1)
+        plt.title(f"{i + 1} criteria")
+        plt.plot(x, y)
+
+    plt.tight_layout()
+    plt.show()
+
+    
+
+
+
+
+# wywołanie odpowiedniego wariantu zadania: 3 (UTA), 4 (UTA GMS)
+# uta()
+
+# 11 > 22 (3 i 4 kryterium), 4 > 27 (3 i 4), 18 > 27 (4), 8 > 23 (3, 4), 10 > 19 (4)
+# 11 == 4, 22 > 27 (3, 4), 18 == 8, 23 > 27 (3, 4), 10 > 19 (4)
+# 11 > 27 (3, 4), 18 > 23 (4), 8 == 19, 4 > 27 (3, 4), 10 > 22 (4)
+# 11 > 19 (3, 4), 10 > 22 (4), 4 > 23 (3, 4), 8 > 27 (3, 4), 18 > 27 (4)
+# pairs = [(11, 22, 0), (4, 27, 0), (18, 27, 0), (8, 23, 0), (10, 19, 0)]
+# pairs = [(11, 4, 1), (22, 27, 0), (18, 8, 1), (23, 27, 0), (10, 19, 0)]
+# pairs = [(11, 27, 0), (18, 23, 0), (8, 19, 1), (4, 27, 0), (10, 22, 0)]
+pairs = [(11, 19, 0), (10, 22, 0), (4, 23, 0), (8, 27, 0), (18, 27, 0)]
+
+uta_gms(pairs)
