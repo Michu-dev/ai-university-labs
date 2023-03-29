@@ -60,10 +60,13 @@ for i in range(CRITERIA_NUMBER):
 for i in range(CRITERIA_NUMBER):
     model += (sum(u_variables[i][variants[j][i]] for j in variants) <= 0.5, f"u_{i} <= 0.5")
 
+
+obj_func = None
+
 def uta():
     # ranking referencyjny
     # 11 == 10 > 4 (4 grupa) > 22 (4 grupa) > 19 (4 grupa) > 8 (3, 4 grupa) == 18 > 23 (3, 4 grupa) > 27 (3, 4 grupa)
-    global model
+    global model, obj_func
     model += (
         sum(u_variables[i][variants[11][i]] for i in range(CRITERIA_NUMBER)) == sum(
         u_variables[i][variants[10][i]] for i in range(CRITERIA_NUMBER)
@@ -113,67 +116,12 @@ def uta():
         ) + epsilon, '23 >= 27 (1 group preference information)'
     )
 
-    for i in range(CRITERIA_NUMBER):
-        sorted_keys = sorted(u_variables[i].keys())
-        for j in range(len(sorted_keys) - 1):
-            model += (u_variables[i][sorted_keys[j]] >= u_variables[i][sorted_keys[j + 1]], f"weight_{i}_{sorted_keys[j]} >= weight_{i}_{sorted_keys[j + 1]}")
-        model += (u_variables[i][sorted_keys[0]] <= ideal_utilities[i], f"weight_{i}_0 >= weight_{i}_{sorted_keys[0]}")
-        model += (u_variables[i][sorted_keys[len(sorted_keys ) - 1]] >= worst_utilities[i], f"weight_{i}_{sorted_keys[len(sorted_keys ) - 1]} >= weight_{i}_1")
 
     # Funkcja celu 
     obj_func = epsilon
 
-
-    model += obj_func
-
-    # Uruchomienie solvera
-    status = model.solve()
-
-    # Wypisanie statusu
-    print(f"status: {model.status}, {LpStatus[model.status]}")
-
-    # WYNIK: status: 1, Optimal
-    # Wypisanie realizacji funkcji celu
-    print(f"objective: {model.objective.value()}")
-    # WYNIK: objective: 12.000000199999999
-
-    criteria_plots = {}
-    # Wypisanie wartosci zmiennych decyzyjnych
-    for i in range(CRITERIA_NUMBER):
-        sorted_keys = sorted(u_variables[i].keys())
-        for j in sorted_keys:
-            if i not in criteria_plots:
-                criteria_plots[i] = [(j, u_variables[i][j].value())]
-            else:
-                criteria_plots[i].append((j, u_variables[i][j].value()))
-            print(f"weight_{i}_{j}: ", u_variables[i][j].value())
-
-    variants_uta_values = defaultdict(lambda: 0)
-    for v in variants:
-        for i in range(CRITERIA_NUMBER):
-            # if v not in variants_uta_values:
-            variants_uta_values[v] += u_variables[i][variants[v][i]].value()
-
-    print('UTA values: ')
-    for k in variants_uta_values.keys():
-        print(str(k) + ': ' + str(variants_uta_values[k]))
-
-    # Rysowanie wykresów funkcji użyteczności
-    for i in range(CRITERIA_NUMBER):
-        x = [tup[0] for tup in criteria_plots[i]]
-        y = [tup[1] for tup in criteria_plots[i]]
-        print(x)
-        print(y)
-        plt.subplot(2, 2, i + 1)
-        plt.title(f"{i + 1} criteria")
-        plt.plot(x, y)
-
-    plt.tight_layout()
-    plt.show()
-
-
 def uta_gms(pairs):
-    global model
+    global model, obj_func
 
     for pair in pairs:
         if pair[2] == 1:
@@ -188,80 +136,120 @@ def uta_gms(pairs):
                 u_variables[i][variants[pair[1]][i]] for i in range(CRITERIA_NUMBER)
                 ) + epsilon, f'{pair[0]} >= {pair[1]}'
             )
-    for i in range(CRITERIA_NUMBER):
-        sorted_keys = sorted(u_variables[i].keys())
-        for j in range(len(sorted_keys) - 1):
-            model += (u_variables[i][sorted_keys[j]] >= u_variables[i][sorted_keys[j + 1]], f"weight_{i}_{sorted_keys[j]} >= weight_{i}_{sorted_keys[j + 1]}")
-        model += (u_variables[i][sorted_keys[0]] <= ideal_utilities[i], f"weight_{i}_0 >= weight_{i}_{sorted_keys[0]}")
-        model += (u_variables[i][sorted_keys[len(sorted_keys ) - 1]] >= worst_utilities[i], f"weight_{i}_{sorted_keys[len(sorted_keys ) - 1]} >= weight_{i}_1")
 
     # Funkcja celu 
     obj_func = epsilon
 
+    
+def most_representative_value_function(necessary_preference_pairs, non_necessary_preference_pairs):
+    delta = LpVariable(name="delta", lowBound=0, cat='Continuous')
+    global model, obj_func
 
-    model += obj_func
+    for pair in necessary_preference_pairs:
+        model += (
+                sum(u_variables[i][variants[pair[0]][i]] for i in range(CRITERIA_NUMBER)) >= sum(
+                u_variables[i][variants[pair[1]][i]] for i in range(CRITERIA_NUMBER)
+                ) + epsilon, f'{pair[0]} >= {pair[1]} + epsilon'
+            )
+    
+    for pair in non_necessary_preference_pairs:
+        model += (
+                sum(u_variables[i][variants[pair[0]][i]] for i in range(CRITERIA_NUMBER)) <= sum(
+                u_variables[i][variants[pair[1]][i]] for i in range(CRITERIA_NUMBER)
+                ) + delta, f'{pair[0]} <= {pair[1]} + delta'
+            )
+        
 
-    # Uruchomienie solvera
-    status = model.solve()
-
-    # Wypisanie statusu
-    print(f"status: {model.status}, {LpStatus[model.status]}")
-
-    # WYNIK: status: 1, Optimal
-    # Wypisanie realizacji funkcji celu
-    print(f"objective: {model.objective.value()}")
-    # WYNIK: objective: 12.000000199999999
-
-    criteria_plots = {}
-    # Wypisanie wartosci zmiennych decyzyjnych
-    for i in range(CRITERIA_NUMBER):
-        sorted_keys = sorted(u_variables[i].keys())
-        for j in sorted_keys:
-            if i not in criteria_plots:
-                criteria_plots[i] = [(j, u_variables[i][j].value())]
-            else:
-                criteria_plots[i].append((j, u_variables[i][j].value()))
-            print(f"weight_{i}_{j}: ", u_variables[i][j].value())
-
-    variants_uta_values = defaultdict(lambda: 0)
-    for v in variants:
-        for i in range(CRITERIA_NUMBER):
-            # if v not in variants_uta_values:
-            variants_uta_values[v] += u_variables[i][variants[v][i]].value()
-
-    variants_uta_values = dict(sorted(variants_uta_values.items(), key=lambda x:x[1], reverse=True))
-    print('UTA values: ')
-    for k in variants_uta_values.keys():
-        print(str(k) + ': ' + str(variants_uta_values[k]))
-
-    # Rysowanie wykresów funkcji użyteczności
-    for i in range(CRITERIA_NUMBER):
-        x = [tup[0] for tup in criteria_plots[i]]
-        y = [tup[1] for tup in criteria_plots[i]]
-        print(x)
-        print(y)
-        plt.subplot(2, 2, i + 1)
-        plt.title(f"{i + 1} criteria")
-        plt.plot(x, y)
-
-    plt.tight_layout()
-    plt.show()
-
+    # Funkcja celu 
+    obj_func = 1000 * epsilon - delta
     
 
+for i in range(CRITERIA_NUMBER):
+    sorted_keys = sorted(u_variables[i].keys())
+    for j in range(len(sorted_keys) - 1):
+        model += (u_variables[i][sorted_keys[j]] >= u_variables[i][sorted_keys[j + 1]], f"weight_{i}_{sorted_keys[j]} >= weight_{i}_{sorted_keys[j + 1]}")
+    model += (u_variables[i][sorted_keys[0]] <= ideal_utilities[i], f"weight_{i}_0 >= weight_{i}_{sorted_keys[0]}")
+    model += (u_variables[i][sorted_keys[len(sorted_keys ) - 1]] >= worst_utilities[i], f"weight_{i}_{sorted_keys[len(sorted_keys ) - 1]} >= weight_{i}_1")
 
 
-
-# wywołanie odpowiedniego wariantu zadania: 3 (UTA), 4 (UTA GMS)
-# uta()
+# wywołanie odpowiedniego wariantu zadania: 3 (UTA), 4 (UTA GMS), 5 (most_representative_value_func)
+# przez odkomentowanie/zakomentowanie odpowiednich fragmentów kodu
+uta()
 
 # 11 > 22 (3 i 4 kryterium), 4 > 27 (3 i 4), 18 > 27 (4), 8 > 23 (3, 4), 10 > 19 (4)
 # 11 == 4, 22 > 27 (3, 4), 18 == 8, 23 > 27 (3, 4), 10 > 19 (4)
 # 11 > 27 (3, 4), 18 > 23 (4), 8 == 19, 4 > 27 (3, 4), 10 > 22 (4)
 # 11 > 19 (3, 4), 10 > 22 (4), 4 > 23 (3, 4), 8 > 27 (3, 4), 18 > 27 (4)
+
+# Odkomentuj jedną z par i wywołaj funkcję uta_gms
+
 # pairs = [(11, 22, 0), (4, 27, 0), (18, 27, 0), (8, 23, 0), (10, 19, 0)]
 # pairs = [(11, 4, 1), (22, 27, 0), (18, 8, 1), (23, 27, 0), (10, 19, 0)]
 # pairs = [(11, 27, 0), (18, 23, 0), (8, 19, 1), (4, 27, 0), (10, 22, 0)]
-pairs = [(11, 19, 0), (10, 22, 0), (4, 23, 0), (8, 27, 0), (18, 27, 0)]
+# pairs = [(11, 19, 0), (10, 22, 0), (4, 23, 0), (8, 27, 0), (18, 27, 0)]
 
-uta_gms(pairs)
+# uta_gms(pairs)
+
+# Odkomentuj necessary_pref_pairs, non_necessary_pref_pairs i funkcję 
+# most_representative_value_function w celu uruchomienia zadania na 5
+
+# necessary_pref_pairs = [(11, 8), (11, 4), (11, 22), (10, 4), (10, 22), (8, 19),
+#                         (4, 19), (18, 19), (18, 23), (22, 19), (22, 23), (19, 27),
+#                         (23, 27)]
+
+# non_necessary_pref_pairs = [(11, 10), (11, 18), (10, 11), (10, 18), (10, 8),
+#                             (8, 4), (8, 18), (8, 22), (8, 23), (8, 10), (18, 11),
+#                             (18, 10), (18, 22), (18, 8), (18, 4), (22, 4), (22, 18),
+#                             (22, 8), (4, 22), (4, 18), (4, 8), (4, 23), (23, 22),
+#                             (23, 8), (23, 4), (23, 19)]
+
+# most_representative_value_function(necessary_pref_pairs, non_necessary_pref_pairs)
+
+
+model += obj_func
+
+# Uruchomienie solvera
+status = model.solve()
+
+# Wypisanie statusu
+print(f"status: {model.status}, {LpStatus[model.status]}")
+
+# WYNIK: status: 1, Optimal
+# Wypisanie realizacji funkcji celu
+print(f"objective: {model.objective.value()}")
+
+criteria_plots = {}
+# Wypisanie wartosci zmiennych decyzyjnych
+for i in range(CRITERIA_NUMBER):
+    sorted_keys = sorted(u_variables[i].keys())
+    for j in sorted_keys:
+        if i not in criteria_plots:
+            criteria_plots[i] = [(j, u_variables[i][j].value())]
+        else:
+            criteria_plots[i].append((j, u_variables[i][j].value()))
+        print(f"weight_{i}_{j}: ", u_variables[i][j].value())
+
+variants_uta_values = defaultdict(lambda: 0)
+for v in variants:
+    for i in range(CRITERIA_NUMBER):
+        # if v not in variants_uta_values:
+        variants_uta_values[v] += u_variables[i][variants[v][i]].value()
+
+variants_uta_values = dict(sorted(variants_uta_values.items(), key=lambda x:x[1], reverse=True))
+print('UTA values: ')
+for k in variants_uta_values.keys():
+    print(str(k) + ': ' + str(variants_uta_values[k]))
+
+# Rysowanie wykresów funkcji użyteczności
+for i in range(CRITERIA_NUMBER):
+    x = [tup[0] for tup in criteria_plots[i]]
+    y = [tup[1] for tup in criteria_plots[i]]
+    print(x)
+    print(y)
+    plt.subplot(2, 2, i + 1)
+    plt.title(f"{i + 1} criteria")
+    plt.plot(x, y)
+
+plt.tight_layout()
+plt.show()
+
