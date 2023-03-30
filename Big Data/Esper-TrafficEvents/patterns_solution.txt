@@ -1,0 +1,42 @@
+1. Uzyskaj informacje o seriach pomiarów w mieście Poznań mających długość co najmniej 3, w których wartość prędkości nie spadała poniżej 100 km/h. Pobierz
+imię i nazwisko właściciela pojazdów, ich prędkości oraz czas rejestracji zdarzenia. Czas, w ramach którego należy oczekiwać na dany wzorzec to 5 sekund.
+Kierowcy (utożsamiani z właścicielami) to prawdopodobnie uczestnicy wyścigu ulicznego.
+Rozwiązanie znajduje się w ostatnim poleceniu (@name('result')):
+
+@public @buseventtype create json schema TrafficEvent(car string, manufacturer string, city string, car_owner string, velocity int, fine int, penalty_points int, ts string);
+create window TrafficEventWindow#length(10) as TrafficEvent;
+insert into TrafficEventWindow select * from TrafficEvent;
+@name('result') select a[0].car_owner as d1, a[0].velocity as v1, a[0].ts as ts1, a[1].car_owner as d2, a[1].velocity as v2, a[1].ts as ts2, a[2].car_owner as d3, a[2].velocity as v3, a[2].ts as ts3 from pattern[[3:] a=TrafficEventWindow(city='Poznań') until TrafficEventWindow(city='Poznań' and velocity < 5) where timer:within(2) ];
+
+2. Znajdź serię 3 pomiarów dla danej marki samochodu, z których wyróżnisz startowy pomiar prędkości oraz pomiary, w których wykryto niższą oraz wyższą prędkość
+od startowej. Kolejny pomiar zarejestrowany, na którego wzorzec należy oczekiwać 5 sekund, powinien przekroczyć 100 km/h. Odnotujemy w ten sposób, czy dana marka
+samochodu sprzyja do szybkiej jazdy na podstawie poprzednich pomiarów, a zatem sprawdzimy czy jej użytkownicy są narażeni na otrzymywanie wysokich mandatów przez
+pokusę wykorzystania większej mocy silnika.
+Rozwiązanie znajduje się w ostatnim poleceniu (@name('result')):
+
+@public @buseventtype create json schema TrafficEvent(car string, manufacturer string, city string, car_owner string, velocity int, fine int, penalty_points int, ts string);
+create window TrafficEventWindow#length(10) as TrafficEvent;
+insert into TrafficEventWindow select * from TrafficEvent;
+@name('result') select st.car as car, st.velocity, low.velocity, high.velocity from pattern[ every st=TrafficEventWindow -> low=TrafficEventWindow(car=st.car and velocity < st.velocity) -> high=TrafficEventWindow(car=st.car and velocity > st.velocity) where timer:within(5) and TrafficEventWindow(velocity > 100)];
+
+3. Wykrywaj serię pomiarów prędkości dla poszczególnych polskich miast układających się w kształt litery V. Seria, inaczej niż w przypadku poprzedniego zadania, nie
+musi składać się z trzech pomiarów. Wykryjemy w ten spośob liczne wahania prędkości w określonym czasie dla danego miasta (prędkości te na wykresie układałyby się
+w kształt litery V).
+Rozwiązanie znajduje się w ostatnim poleceniu (@name('result')):
+
+@public @buseventtype create json schema TrafficEvent(car string, manufacturer string, city string, car_owner string, velocity int, fine int, penalty_points int, ts string);
+create window TrafficEventWindow#length(10) as TrafficEvent;
+insert into TrafficEventWindow select * from TrafficEvent;
+@name('result') select * from TrafficEventWindow match_recognize (
+                partition by city
+                measures st.city as city,
+                st.velocity as startVelocity,
+                LAST(low.velocity) as lowVelocity,
+                LAST(high.velocity) as highVelocity,
+                st.ts as startTs,
+                LAST(high.ts) as stopTs
+                pattern (st low+ high+)
+                define
+                low as low.velocity < PREV(low.velocity),
+                high as high.velocity > PREV(high.velocity)
+               );
