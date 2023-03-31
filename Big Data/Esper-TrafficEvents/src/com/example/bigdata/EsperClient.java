@@ -54,17 +54,16 @@ public class EsperClient {
                     insert into TrafficEventWindow select * from TrafficEvent;
                     @name('result') select * from TrafficEventWindow match_recognize (
                                     partition by city
-                                    measures st.city as car_owner,
+                                    measures st.city as city,
                                     st.velocity as startVelocity,
-                                    LAST(low.velocity) as lowVelocity,
-                                    LAST(high.velocity) as highVelocity,
-                                    st.ets as startEts,
-                                    LAST(high.ets) as stopEts
-                                    pattern (st low+ high+)
+                                    COUNT(normal.velocity) as count_normal_velocity,
+                                    ls.velocity as lastVelocity,
+                                    st.ets as startEts
+                                    pattern (st normal+ ls)
                                     define
-                                    st as st.velocity >= 100,
-                                    low as low.velocity < PREV(low.velocity) AND low.velocity <= 50,
-                                    high as high.velocity > PREV(high.velocity) AND high.velocity >= 100
+                                    st as st.velocity > 50,
+                                    normal as normal.velocity <= 50,
+                                    ls as ls.velocity > 50
                                    );""", compilerArgs);
         }
         catch (EPCompileException ex) {

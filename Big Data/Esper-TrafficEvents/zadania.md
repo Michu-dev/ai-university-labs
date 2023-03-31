@@ -141,16 +141,15 @@ Wyniki powinny zawierać, następujące kolumny:
 - `high_velocity` - wyższą wartość prędkości od prędkości startowej.
 
 ## Zadanie 8
-Wykrywaj serię pomiarów prędkości dla poszczególnych kierowców - piratów drogowych, którzy
-najpierw przekroczyli prędkość 100 km/h, w następnym pomiarze dostosowali się do obowiązującej
-maksymalnej prędkości 50 km/h, a w ostatnim znów przekroczyli prędkość 100 km/h, łamiąc
-po raz kolejny obowiązujące prawo.
+Znajduj, ile zostało wykonanych pomiarów prędkości w normie (mniejszej lub równej
+50 km/h) pomiędzy pierwszym zarejestrowanym przekroczeniem prędkości 50 km/h a ponownym
+przekroczeniem prędkości 50 km/h w danym mieście.
 
 Wyniki powinny zawierać, następujące kolumny:
-- `car_owner` - imię i nazwisko kierowcy
-- `start_velocity` - startową wartość prędkości przekraczającą wartość 100 km/h
-- `low_velocity` - drugą wartość prędkości, która jest niższa lub równa 
-maksymalnej dopuszczalnej prędkości 50 km/h 
-- `high_velocity` - trzecią wartość prędkości, która jest powtórzeniem zdarzenia dla pierwszej
-prędkości - ponownego przerkoczenia prędkości 100 km/h
-- `start_ets` - czas rejestracji zdarzenia początkującego dla danego kierowcy.
+- `city` - nazwę miasta
+- `start_velocity` - pierwszą zarejestrowaną prędkość powyżej 50 km/h
+- `count_normal_velocity` - liczbę kolejnych zdarzeń, w których zarejestrowana prędkość
+była mniejsza lub równa 50 km/h
+- `end_velocity` - drugą zarejestrowaną prędkość powyżej 50 km/h
+- `start_ets` - czas rejestracji pierwszej zarejestowanej prędkości powyżej 50 km/h
+dla danego miasta.
