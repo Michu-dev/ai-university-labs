@@ -92,6 +92,13 @@ dla agregacji danych dla poszczególnych miast z ostatnich 5 minut. Następnie u
 złącz z prostym, ogólnym oknem bieżących danych i wybierz kierowców na podstawie odpowiedniego
 warunku.
 
+Lista top5 pomiarow predkosci dla danej osoby - osoba ma wystepowac w conajmniej 2
+
+character
+city1
+city2
+its1 - czas rozpoczecia analizowanej minuty
+
 Wyniki powinny zawierać, następujące kolumny:
 - `car_owner` - imię i nazwisko kierowcy (właściciela pojazdu)
 - `car` - nazwę marki samochodu, którym porusza się kierowca
@@ -134,19 +141,16 @@ Wyniki powinny zawierać, następujące kolumny:
 - `high_velocity` - wyższą wartość prędkości od prędkości startowej.
 
 ## Zadanie 8
-Wykrywaj serię pomiarów prędkości dla poszczególnych polskich miast układających
-się w kształt litery V. Seria, inaczej niż w przypadku poprzedniego zadania, nie musi
-składać się z trzech pomiarów. Wykryjemy w ten sposób liczne wahania prędkości w określonym
-czasie dla danego miasta (prędkości te na wykresie czasu układałyby się w kształt litery V).
+Wykrywaj serię pomiarów prędkości dla poszczególnych kierowców - piratów drogowych, którzy
+najpierw przekroczyli prędkość 100 km/h, w następnym pomiarze dostosowali się do obowiązującej
+maksymalnej prędkości 50 km/h, a w ostatnim znów przekroczyli prędkość 100 km/h, łamiąc
+po raz kolejny obowiązujące prawo.
 
 Wyniki powinny zawierać, następujące kolumny:
-- `city` - nazwę miasta
-- `start_velocity` - startową wartość prędkości ("start" litery V na wykresie czasu
-rejestracji zdarzeń)
-- `low_velocity` - niższą wartość prędkości od prędkości startowej
-- `high_velocity` - wyższą wartość prędkości od prędkości startowej ("koniec" litery V na
-wykresie czasu rejestracji zdarzeń).
-- `start_ets` - czas rejestracji zdarzenia początkującego odchylenia prędkości od normy w 
-danym mieście
-- `end_ets` - czas rejestracji zdarzenia kończącego odchylenia prędkości od normy w
-danym mieście (kompletującego formowanie litery V na wykresie czasu rejestracji zdarzeń).
+- `car_owner` - imię i nazwisko kierowcy
+- `start_velocity` - startową wartość prędkości przekraczającą wartość 100 km/h
+- `low_velocity` - drugą wartość prędkości, która jest niższa lub równa 
+maksymalnej dopuszczalnej prędkości 50 km/h 
+- `high_velocity` - trzecią wartość prędkości, która jest powtórzeniem zdarzenia dla pierwszej
+prędkości - ponownego przerkoczenia prędkości 100 km/h
+- `start_ets` - czas rejestracji zdarzenia początkującego dla danego kierowcy.
