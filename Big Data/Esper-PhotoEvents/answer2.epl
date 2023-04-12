@@ -1,0 +1,1 @@
+@name('answer') SELECT * from PhotoEvent WHERE height <= 0.1 * width OR width <= 0.1 * height;

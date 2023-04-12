@@ -1,0 +1,1 @@
+@name('answer') SELECT *, median(iso) AS median_iso from PhotoEvent#time(300) GROUP BY genre HAVING iso >= 2 * median(iso) OR 2 * iso <= median(iso);

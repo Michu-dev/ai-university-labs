@@ -34,17 +34,22 @@ public class EsperClient {
 
         Configuration config = new Configuration();
         CompilerArguments compilerArgs = new CompilerArguments(config);
-
+//        create table MeanComparison (city string primary key, avgVelocity avg(integer));
+//
+//        into table CityAverages
+//        select city, avg(velocity) as avgVelocity
+//        from PhotoEvent#length(5) group by city;
         // Compile the EPL statement
         EPCompiler compiler = EPCompilerProvider.getCompiler();
         EPCompiled epCompiled;
         try {
             epCompiled = compiler.compile("""
-                        @public @buseventtype create json schema
-                        PhotoEvent(camera string, genre string, iso int, width int, height int, ets string, its string);
-                        
-                        @name('result') SELECT genre, median(iso) AS median_iso from PhotoEvent#time(300) GROUP BY genre;
-                    """,
+                                @public @buseventtype create json schema
+                                PhotoEvent(camera string, genre string, iso int, width int, height int, ets string, its string);
+                               
+                                
+                                @name('result') SELECT genre, avg(iso) AS median_iso from PhotoEvent#time(300) GROUP BY genre HAVING iso >= 2 * median(iso) OR 2 * iso <= median(iso);
+                            """,
                     compilerArgs
             );
         }
