@@ -1,0 +1,4 @@
+create window BeautyPhotos#length(10) as PhotoEvent;
+insert into BeautyPhotos select * from PhotoEvent where genre = 'Beauty';
+@name('answer') select avg(f.iso + s.iso + t.iso) as mean, f.ets as ets_first, s.ets as ets_second, t.ets as ets_third
+from pattern[ every f=BeautyPhotos(iso > 1000) -> s=BeautyPhotos(height > 200) -> t=BeautyPhotos(iso > 1000) while (iso >= 100) ];

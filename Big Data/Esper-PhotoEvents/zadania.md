@@ -94,6 +94,16 @@ Pamiętaj, żeby pominąć przypadki, dla których ilorazu nie da się obliczyć
 Wyniki powinny zawierać, następujące kolumny:
 - `iloraz` - stosunek średniej wartości ISO dla tematyki weselnej do średniej wartości ISO dla tematyki beauty
 
+
+"@public @buseventtype create json schema " +
+"PhotoEvent(camera string, genre string, iso int, width int, height int, ts string);" +
+"create window BeautyPhotos#length(5) as PhotoEvent;" +
+"on PhotoEvent(genre='Beauty') merge BeautyPhotos insert select *;" +
+"create window WeddingPhotos#length(5) as PhotoEvent;" +
+"on PhotoEvent(genre='Wedding') merge WeddingPhotos insert select *;" +
+"@name('result') select avg(w.iso)/avg(b.iso) as iloraz from WeddingPhotos w full outer join BeautyPhotos b " +
+"having avg(w.iso)/avg(b.iso) is not null;"
+
 ## Zadanie 5
 W ramach zadania stworzone zostało okno:
 ```agsl
@@ -110,6 +120,15 @@ Wyniki powinny zawierać, następujące kolumny:
 - `iso_first` - wartość ISO dla pierwszego zdjęcia z serii
 - `iso_second` - wartość ISO dla drugiego zdjęcia z serii
 
+select a[0].ts, a[0].iso, a[1].iso rom pattern[ every ([2:] a=BeautyPhotos until BeautyPhotos(width < 5000) ) ]where a[0].iso > 1000
+
+
+create window BeautyPhotos#length(10) as PhotoEvent;
+insert into BeautyPhotos select * from PhotoEvent where genre = 'Beauty';
+
+SELECT * FROM BeautyPhotos MATCH_RECOGNIZE (PARTITION BY genre MEASURES STRT.ts AS start_ts, LAST(DOWN.ts) AS end_ts PATTERN (STRT DOWN+) DEFINE DOWN AS DOWN.iso < PREV(DOWN.iso));
+
+select a[0].ts, a[0].iso, a[1].iso rom pattern[ every ([2:] a=BeautyPhotos until BeautyPhotos(width < 5000) ) ]where a[0].iso > 1000
 
 ## Zadanie 6
 W ramach zadania stworzone zostało okno:

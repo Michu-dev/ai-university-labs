@@ -46,9 +46,30 @@ public class EsperClient {
             epCompiled = compiler.compile("""
                                 @public @buseventtype create json schema
                                 PhotoEvent(camera string, genre string, iso int, width int, height int, ets string, its string);
-                               
+                                create window BeautyPhotos#length(10) as PhotoEvent;
+                                insert into BeautyPhotos select * from PhotoEvent where genre = 'Beauty';
                                 
-                                @name('result') SELECT genre, avg(iso) AS median_iso from PhotoEvent#time(300) GROUP BY genre HAVING iso >= 2 * median(iso) OR 2 * iso <= median(iso);
+                                @name('result') SELECT * FROM BeautyPhotos MATCH_RECOGNIZE
+                                                        (PARTITION BY genre
+                                                         MEASURES STRT.ets AS start_ets,
+                                                         STRT.camera AS start_camera,
+                                                         STRT.genre AS start_genre,
+                                                         STRT.iso AS start_iso,
+                                                         STRT.width AS start_width,
+                                                         STRT.height AS start_height,
+                                                         STRT.its AS start_its,
+                                                         LAST(DOWN.ets) AS end_ets,
+                                                         LAST(DOWN.camera) AS end_camera,
+                                                         LAST(DOWN.genre) AS end_genre,
+                                                         LAST(DOWN.iso) AS end_iso,
+                                                         LAST(DOWN.width) AS end_width,
+                                                         LAST(DOWN.height) AS end_height,
+                                                         LAST(DOWN.its) AS end_its
+                                                         ALL MATCHES
+                                                         PATTERN (STRT DOWN+)
+                                                         DEFINE
+                                                         DOWN AS DOWN.iso < PREV(DOWN.iso)
+                                                         );
                             """,
                     compilerArgs
             );
