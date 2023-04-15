@@ -1,0 +1,5 @@
+create table Top5Velocities (car_owner string primary key, city string, velocity int, its string);
+insert into Top5Velocities
+select car_owner, city, velocity, its
+from TrafficEvent#time(60) order by velocity desc limit 5;
+@name('answer') select car_owner, city, min(its) as its1 from Top5Velocities group by car_owner having count(*) >= 2;

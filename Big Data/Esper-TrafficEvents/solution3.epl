@@ -1,0 +1,1 @@
+@name('answer') SELECT car_owner, SUM(penalty_points) FROM TrafficEvent GROUP BY car_owner HAVING SUM(penalty_points) >= 24;

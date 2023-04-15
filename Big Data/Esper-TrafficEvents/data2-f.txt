@@ -1,0 +1,5 @@
+R: {"car":"Prius","manufacturer":"Toyota","city":"Zielona Góra","car_owner":"Dina Bochenek","velocity":47,"fine":1500,"penalty_points":13,"ets":"2023-04-15 06:54:46","its":"2023-04-15 06:55:25"}
+R: {"car":"Mustang","manufacturer":"Ford","city":"Szczecin","car_owner":"Roger Paluch","velocity":55,"fine":50,"penalty_points":1,"ets":"2023-04-15 06:54:53","its":"2023-04-15 06:55:25"}
+R: {"car":"Verano","manufacturer":"Buick","city":"Zielona Góra","car_owner":"Tacjana Piekarski","velocity":54,"fine":1500,"penalty_points":13,"ets":"2023-04-15 06:54:38","its":"2023-04-15 06:55:25"}
+R: {"car":"MKZ","manufacturer":"Lincoln","city":"Bydgoszcz","car_owner":"Hanna Skowroński","velocity":52,"fine":1500,"penalty_points":13,"ets":"2023-04-15 06:54:30","its":"2023-04-15 06:55:25"}
+

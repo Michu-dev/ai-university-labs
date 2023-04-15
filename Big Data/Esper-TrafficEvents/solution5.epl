@@ -1,0 +1,3 @@
+create window TrafficEventWindow#length(10) as TrafficEvent;
+insert into TrafficEventWindow select * from TrafficEvent;
+@name('answer') select a[0].car_owner as d1, a[1].car_owner as d2, a[0].ets as ets1 from pattern[ every ([3:] a=TrafficEventWindow(city='Poznań') until TrafficEventWindow(city='Poznań' and velocity < 100) ) ];

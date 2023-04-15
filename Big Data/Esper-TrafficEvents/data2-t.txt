@@ -1,0 +1,20 @@
+R: {"car":"Prius","manufacturer":"Toyota","city":"Zielona Góra","car_owner":"Dina Bochenek","velocity":107,"fine":1500,"penalty_points":13,"ets":"2023-04-15 06:54:46","its":"2023-04-15 06:55:25"}
+R: {"car":"Mustang","manufacturer":"Ford","city":"Szczecin","car_owner":"Roger Paluch","velocity":55,"fine":50,"penalty_points":1,"ets":"2023-04-15 06:54:53","its":"2023-04-15 06:55:25"}
+R: {"car":"Verano","manufacturer":"Buick","city":"Zielona Góra","car_owner":"Tacjana Piekarski","velocity":107,"fine":1500,"penalty_points":13,"ets":"2023-04-15 06:54:38","its":"2023-04-15 06:55:25"}
+R: {"car":"MKZ","manufacturer":"Lincoln","city":"Bydgoszcz","car_owner":"Hanna Skowroński","velocity":106,"fine":1500,"penalty_points":13,"ets":"2023-04-15 06:54:30","its":"2023-04-15 06:55:25"}
+R: {"car":"Enclave","manufacturer":"Buick","city":"Zielona Góra","car_owner":"Aleksandra Kowalewski","velocity":39,"fine":0,"penalty_points":0,"ets":"2023-04-15 06:54:44","its":"2023-04-15 06:55:25"}
+R: {"car":"MKZ","manufacturer":"Lincoln","city":"Kielce","car_owner":"Nestor Sokół","velocity":92,"fine":1000,"penalty_points":11,"ets":"2023-04-15 06:54:50","its":"2023-04-15 06:55:25"}
+R: {"car":"Encore","manufacturer":"Buick","city":"Toruń","car_owner":"Damian Banasiak","velocity":86,"fine":800,"penalty_points":9,"ets":"2023-04-15 06:55:13","its":"2023-04-15 06:55:25"}
+R: {"car":"Versa","manufacturer":"Nissan","city":"Poznań","car_owner":"Gabriela Leśniak","velocity":143,"fine":2500,"penalty_points":15,"ets":"2023-04-15 06:54:45","its":"2023-04-15 06:55:25"}
+R: {"car":"Enclave","manufacturer":"Buick","city":"Kielce","car_owner":"Antoni Kędziora","velocity":103,"fine":1500,"penalty_points":13,"ets":"2023-04-15 06:54:42","its":"2023-04-15 06:55:25"}
+R: {"car":"Fiesta","manufacturer":"Ford","city":"Białystok","car_owner":"Maksymilian Adamski","velocity":34,"fine":0,"penalty_points":0,"ets":"2023-04-15 06:54:46","its":"2023-04-15 06:55:25"}
+R: {"car":"Navigator","manufacturer":"Lincoln","city":"Toruń","car_owner":"Maryna Szcześniak","velocity":87,"fine":800,"penalty_points":9,"ets":"2023-04-15 06:54:52","its":"2023-04-15 06:55:25"}
+R: {"car":"F150","manufacturer":"Ford","city":"Zielona Góra","car_owner":"Ksenia Dudek","velocity":72,"fine":300,"penalty_points":5,"ets":"2023-04-15 06:54:51","its":"2023-04-15 06:55:25"}
+R: {"car":"Charger","manufacturer":"Dodge","city":"Lublin","car_owner":"Leon Drabik","velocity":45,"fine":0,"penalty_points":0,"ets":"2023-04-15 06:55:19","its":"2023-04-15 06:55:25"}
+R: {"car":"Malibu","manufacturer":"Chevy","city":"Gdańsk","car_owner":"Lilianna Matuszak","velocity":121,"fine":0,"penalty_points":0,"ets":"2023-04-15 06:55:01","its":"2023-04-15 06:55:25"}
+R: {"car":"Durango","manufacturer":"Dodge","city":"Kraków","car_owner":"Innocenty Kowalczyk","velocity":80,"fine":400,"penalty_points":7,"ets":"2023-04-15 06:54:27","its":"2023-04-15 06:55:25"}
+R: {"car":"Cube","manufacturer":"Nissan","city":"Lublin","car_owner":"Walter Krakowiak","velocity":59,"fine":50,"penalty_points":1,"ets":"2023-04-15 06:54:33","its":"2023-04-15 06:55:25"}
+R: {"car":"Accord","manufacturer":"Honda","city":"Łódź","car_owner":"Wanda Ostrowski","velocity":67,"fine":200,"penalty_points":3,"ets":"2023-04-15 06:55:13","its":"2023-04-15 06:55:25"}
+R: {"car":"Corolla","manufacturer":"Toyota","city":"Warszawa","car_owner":"Witalis Kołodziejczyk","velocity":33,"fine":0,"penalty_points":0,"ets":"2023-04-15 06:54:34","its":"2023-04-15 06:55:25"}
+R: {"car":"Cube","manufacturer":"Nissan","city":"Katowice","car_owner":"Wincenty Motyka","velocity":67,"fine":200,"penalty_points":3,"ets":"2023-04-15 06:55:15","its":"2023-04-15 06:55:25"}
+R: {"car":"Riveria","manufacturer":"Buick","city":"Szczecin","car_owner":"Angela Jaśkiewicz","velocity":142,"fine":2500,"penalty_points":15,"ets":"2023-04-15 06:54:40","its":"2023-04-15 06:55:25"}

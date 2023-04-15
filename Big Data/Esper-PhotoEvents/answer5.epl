@@ -1,3 +1,3 @@
 create window BeautyPhotos#length(10) as PhotoEvent;
 insert into BeautyPhotos select * from PhotoEvent where genre = 'Beauty';
-@name('result') select a[0].ets as ets_first, a[0].iso as iso_first, a[1].iso as iso_second from pattern[ every ([2:] a=BeautyPhotos until BeautyPhotos(width < 5000) ) ]where a[0].iso > 1000;
+@name('answer') select a[0].its as its_first, a[0].iso as iso_first, a[1].iso as iso_second from pattern[ every ([2:] a=BeautyPhotos until BeautyPhotos(width < 5000) ) ];

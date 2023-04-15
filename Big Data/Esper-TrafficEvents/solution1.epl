@@ -1,0 +1,1 @@
+@name('answer') SELECT city, MAX(velocity) FROM TrafficEvent#time(300) GROUP BY city;

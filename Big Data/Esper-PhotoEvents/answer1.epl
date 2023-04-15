@@ -1,1 +1,1 @@
-@name('answer') SELECT genre, median(iso) AS median_iso from PhotoEvent#time(300) GROUP BY genre;
+@name('answer') SELECT genre, median(iso) AS median_iso from PhotoEvent#time(60) GROUP BY genre;

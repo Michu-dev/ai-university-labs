@@ -1,0 +1,7 @@
+R: {"car":"Prius","manufacturer":"Toyota","city":"Zielona Góra","car_owner":"Nestor Sokół","velocity":47,"fine":1500,"penalty_points":13,"ets":"2023-04-15 06:54:46","its":"2023-04-15 06:55:25"}
+R: {"car":"Mustang","manufacturer":"Ford","city":"Zielona Góra","car_owner":"Roger Paluch","velocity":55,"fine":50,"penalty_points":1,"ets":"2023-04-15 06:54:53","its":"2023-04-15 06:55:25"}
+R: {"car":"Verano","manufacturer":"Buick","city":"Zielona Góra","car_owner":"Tacjana Piekarski","velocity":85,"fine":1500,"penalty_points":13,"ets":"2023-04-15 06:54:38","its":"2023-04-15 06:55:25"}
+R: {"car":"MKZ","manufacturer":"Lincoln","city":"Zielona Góra","car_owner":"Hanna Skowroński","velocity":106,"fine":1500,"penalty_points":13,"ets":"2023-04-15 06:54:30","its":"2023-04-15 06:55:25"}
+R: {"car":"Enclave","manufacturer":"Buick","city":"Zielona Góra","car_owner":"Aleksandra Kowalewski","velocity":39,"fine":0,"penalty_points":0,"ets":"2023-04-15 06:54:44","its":"2023-04-15 06:55:25"}
+R: {"car":"MKZ","manufacturer":"Lincoln","city":"Kielce","car_owner":"Nestor Sokół","velocity":92,"fine":1000,"penalty_points":13,"ets":"2023-04-15 06:54:50","its":"2023-04-15 06:55:25"}
+

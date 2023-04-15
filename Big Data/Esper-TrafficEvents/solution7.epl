@@ -1,0 +1,17 @@
+create window TrafficEventWindow#length(10) as TrafficEvent;
+insert into TrafficEventWindow select * from TrafficEvent;
+@name('answer') select * from TrafficEventWindow match_recognize (
+                partition by city
+                measures st.city as city,
+                st.velocity as start_velocity,
+                LAST(high.velocity) as high_velocity,
+                (st.velocity + low.velocity + sum(high.velocity)) / (count(high.velocity) + 2) as avg_velocity,
+                count(high.velocity) + 2 as howMany,
+                st.ets as start_ets,
+                fin.ets as end_ets
+                pattern (st low high+ fin)
+                define
+                low as low.velocity > st.velocity,
+                high as high.velocity > low.velocity and high.velocity > PREV(high.velocity),
+                fin as fin.velocity < high.lastof().velocity
+               );

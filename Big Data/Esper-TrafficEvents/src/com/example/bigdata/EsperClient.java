@@ -50,21 +50,12 @@ public class EsperClient {
         try {
             epCompiled = compiler.compile("""
                     @public @buseventtype create json schema TrafficEvent(car string, manufacturer string, city string, car_owner string, velocity int, fine int, penalty_points int, ets string, its string);
-                    create window TrafficEventWindow#length(10) as TrafficEvent;
-                    insert into TrafficEventWindow select * from TrafficEvent;
-                    @name('result') select * from TrafficEventWindow match_recognize (
-                                    partition by city
-                                    measures st.city as city,
-                                    st.velocity as startVelocity,
-                                    COUNT(normal.velocity) as count_normal_velocity,
-                                    ls.velocity as lastVelocity,
-                                    st.ets as startEts
-                                    pattern (st normal+ ls)
-                                    define
-                                    st as st.velocity > 50,
-                                    normal as normal.velocity <= 50,
-                                    ls as ls.velocity > 50
-                                   );""", compilerArgs);
+                    @name('result') select * from TrafficEvent;
+                                       
+                                        
+                                        
+                                        
+                    """, compilerArgs);
         }
         catch (EPCompileException ex) {
             // handle exception here
