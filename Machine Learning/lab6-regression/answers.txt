@@ -1,14 +1,36 @@
-2. W zbiorze znajduje się 77 atrybutów przyjmujących wartości ciągłe. Większość z nich przyjmuje wartośći ~ 0 do 1. 6 atrybutów przyjmuje wartości większe od 1, w tym np.
+1. Regresja liniowa, regresja lasso, regresja logistyczna.
+
+2. W zbiorze znajduje się 77 atrybutów przyjmujących wartości ciągłe. Większość z nich przyjmuje wartości od ~ 0 do 1. 6 atrybutów przyjmuje wartości większe od 1, w tym np.
 stat44. Wyjątkowym atrybutem jest 'diffminus', który przyjmuje tylko wartości ujemne z przedziału <-0.45, 0). Aż 16 atrybutów (począwszy od 'stat19 do 'stat35') posiada ten sam 
 zakres przyjmowanych wartości: <-0.14, 0.14>. Różnią się jednak rozkładem wartości z tego zakresu. Wyjątkowy jest również atrybut 'stat44', gdyż jako jedyny posiada medianę oraz
-poszczególne kwartyle znajdują się powyżej wartości 1. Atrybuty 'similarwindow_4.1', 'similarwindow_4.2', 'similarwindow_4.3' charakteryzują się natomiast obserwacjami 
-odstającymi wyraźnie powyżej 1.
+poszczególne kwartyle znajdujące się powyżej wartości 1. Atrybuty 'similarwindow_4.1', 'similarwindow_4.2', 'similarwindow_4.3' charakteryzują się natomiast obserwacjami 
+odstającymi wyraźnie powyżej 1. Atrybut decyzyjny przyjmuje wartości z zakresu <36, 3056>.
 
 3. Łatwe do interpretacji wydają się metryki średniego błędu bezwzględnego (mean_absolute_error), gdyż będzie to po prostu średnia liczba próbek o które pomylił się nasz model
 oraz maksymalny błąd popełniany na zbiorze uczącym (max_error). Wykorzystane metryki:
 M1 - root mean squared error - pozwoli ocenić jaki średni błąd jest popełniany przez model, przy czym bardziej penalizuje duże różnice między wartościami przewidzianymi a prawdziwymi
 niż mean absolute error, dlatego wydaje się w tym przypadku lepszą opcją, gdyż duże róznice są niepożądane
-M2 - median absolute error - pozwala wybrać wartość środkową błędu z serii przewidywanych danych, eliminując przy tym wpływ obserwacji odstających na końcową predykcję
+M2 - the coefficient of determination - pozwala zinterpretować, jaka część wariancji zmiennej objaśnianej Y została wyjaśniona przez funkcję niezależnych zmiennych X. Jest wskazaniem, jak
+dobre jest uzyskane dopasowanie i jak dobrze nieznane próbki mogą być przewidziane przez model.
 
-4. 
+4. Regresja grzbietowa, regresja lasso, regresja logistyczna, procesy Gaussa, regresja bayesowska, stochastyczny spadek wzdłuż gradientu.
 
+5. Kiedy nie ograniczymy głębokości drzew decyzyjnych model idealnie dopasowuje się do danych ze zbioru uczącego, co może prowadzić do zjawiska przeuczenia. Uzyskane wyniki nie są 
+zadowalające. Najlepsze przetestowane modele w tym zadaniu (KNN, liniowy, drzewo decyzyjne z max_depth=2) nie wyjaśniają nawet 40% wariancji modelu. Wartości pierwiastka ze średniego 
+błędu kwadratowego dochodzą do 300, co stanowi ok. 10% zakresu możliwych wartości przyjmowanych przez atrybut decyzyjny w zbiorze uczącym.
+
+6. Normalizacji/Standaryzacji danych wymagają modele: K-najbliższych sąsiadów, sieć neuronowa oraz maszyny wektorów podpierających o różnych jądrach. Modele te są wrażliwe na rzędy wielkości
+atrybutów. Różne atrybuty mogą posiadać różne skale (w zależności np. od jednostki, charakterystyki atrybutu), co sprawia że niektóre z nich mogą zostać błędnie zinterpretowane jako
+ważniejsze/mniej ważne od pozostałych. Wykorzystanie normalizacji/standaryzacji umożliwiło poprawę uzyskiwanych rezultatów poszczególnych modeli na zbiorze uczącym.
+
+7. Wybrałem model KNN, gdyż znajduje się w grupie regresorów, które najlepiej objaśniają wariancję spośród modeli, które wydają się być odporne na zjawisko przeuczenia. Spośród tych modeli
+posiada on najmniejszą wartość błędu dla metryki RMSE, czyli jest również najbardziej odporny na duże wartości błędu uczącego.
+
+8. Najlepiej interpretowalnym i zarazem najprostszym modelem regresji jest model liniowy. Poszczególne współczynniki do każdego atrybutu określają, o ile zmieni się wartość funkcji celu
+jeśli wartość atrybutu zwiększymy o 1. Wyraz wolny oznacza wartość funkcji celu wtedy, gdy wszystkie wartości atrybutów będą równe 0. Wykres został przedstawiony na skali logarytmicznej
+z wyróżnionym oznaczeniem wartości ujemnych oraz dodatnich w skali rzeczywistej. Zabieg został przeprowadzony przez istotny fakt, że regresja liniowa sama próbuje poradzić sobie z problemem
+normalizacji/standaryzacji poprzez odpowiednie skalowanie współczynników.
+
+9. Te rodzaje modeli, które najlepiej sprawdzały się dla całego zbioru (sieć neuronowa i drzewo decyzyjne z nieograniczoną głębokością), na zbiorze testowym z kolei najgorzej przewidują
+wartości atrybutu decyzyjnego. Wynika to ze zjawiska przeuczenia tych modeli. Paradoksalnie te modele, które na zbiorze uczącym dały najgorsze wyniki (maszyny wektorów podpierających),
+na zbiorze testowym poradziły sobie najlepiej, choć taka sytuacja (najgorsze modele "zmieniają się" w najlepsze na zbiorze uczącym) nie jest oczywiście regułą.
