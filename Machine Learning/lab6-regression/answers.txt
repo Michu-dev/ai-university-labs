@@ -1,0 +1,14 @@
+2. W zbiorze znajduje się 77 atrybutów przyjmujących wartości ciągłe. Większość z nich przyjmuje wartośći ~ 0 do 1. 6 atrybutów przyjmuje wartości większe od 1, w tym np.
+stat44. Wyjątkowym atrybutem jest 'diffminus', który przyjmuje tylko wartości ujemne z przedziału <-0.45, 0). Aż 16 atrybutów (począwszy od 'stat19 do 'stat35') posiada ten sam 
+zakres przyjmowanych wartości: <-0.14, 0.14>. Różnią się jednak rozkładem wartości z tego zakresu. Wyjątkowy jest również atrybut 'stat44', gdyż jako jedyny posiada medianę oraz
+poszczególne kwartyle znajdują się powyżej wartości 1. Atrybuty 'similarwindow_4.1', 'similarwindow_4.2', 'similarwindow_4.3' charakteryzują się natomiast obserwacjami 
+odstającymi wyraźnie powyżej 1.
+
+3. Łatwe do interpretacji wydają się metryki średniego błędu bezwzględnego (mean_absolute_error), gdyż będzie to po prostu średnia liczba próbek o które pomylił się nasz model
+oraz maksymalny błąd popełniany na zbiorze uczącym (max_error). Wykorzystane metryki:
+M1 - root mean squared error - pozwoli ocenić jaki średni błąd jest popełniany przez model, przy czym bardziej penalizuje duże różnice między wartościami przewidzianymi a prawdziwymi
+niż mean absolute error, dlatego wydaje się w tym przypadku lepszą opcją, gdyż duże róznice są niepożądane
+M2 - median absolute error - pozwala wybrać wartość środkową błędu z serii przewidywanych danych, eliminując przy tym wpływ obserwacji odstających na końcową predykcję
+
+4. 
+
