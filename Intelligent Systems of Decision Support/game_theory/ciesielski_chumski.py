@@ -8,7 +8,6 @@ class Ciesielski_Chumski(Player):
         self.opponent_cards = []
         self.opponent_cards_on_table = []
         self.my_cards_on_table = []
-        self.init_prob = 0.6
         self.checked = None
 
     def putCard(self, declared_card):
@@ -16,6 +15,11 @@ class Ciesielski_Chumski(Player):
             self.opponent_cards_on_table.append(declared_card)
             if declared_card in self.opponent_cards:
                 self.opponent_cards.remove(declared_card)
+
+            for card in sorted(self.cards, key=lambda x: x[0]):
+                if card[0] >= declared_card[0]:
+                    self.my_cards_on_table.append(card)
+                    return card, card
         else:
             if self.checked == False:
                 cards_taken = []
@@ -24,32 +28,10 @@ class Ciesielski_Chumski(Player):
                 self.opponent_cards.extend(cards_taken)
                 self.opponent_cards_on_table = self.opponent_cards_on_table[:-1]
                 self.my_cards_on_table = self.my_cards_on_table[:max([-2, -len(self.my_cards_on_table)])]
-            card = min(self.cards)
+            card = min(self.cards, key=lambda x: x[0])
             self.my_cards_on_table.append(card)
             return card, card
         
-        if len(self.cards) == 1 and declared_card is not None and self.cards[0][0] < declared_card[0]:
-            self.opponent_cards_on_table = self.opponent_cards_on_table[:max([-2, -len(self.opponent_cards_on_table)])]
-            self.my_cards_on_table = self.my_cards_on_table[:-1]
-            return "draw"
-        
-        for card in sorted(self.cards, key=lambda x: x[0]):
-            if card[0] >= declared_card[0]:
-                self.my_cards_on_table.append(card)
-                return card, card
-        
-        cheating_probability = self.init_prob / ((len(self.cards) + len(self.opponent_cards)) / 2)
-        if random.random() < cheating_probability:
-            card = min(self.cards)
-            declaration = (min(declared_card[0] + 1, 14), random.choice([0, 1, 2, 3]))
-            while declaration in self.opponent_cards:
-                declaration = (min(declared_card[0] + 1, 14), random.choice([0, 1, 2, 3]))
-            self.my_cards_on_table.append(card)
-            return card, declaration
-        else:
-            self.opponent_cards_on_table = self.opponent_cards_on_table[:max([-2, -len(self.opponent_cards_on_table)])]
-            self.my_cards_on_table = self.my_cards_on_table[:-1]
-            return "draw"
     
     def getCheckFeedback(self, checked, iChecked, iDrewCards, revealedCard, noTakenCards, log=True):
         super().getCheckFeedback(checked, iChecked, iDrewCards, revealedCard, noTakenCards, log)
@@ -76,7 +58,7 @@ class Ciesielski_Chumski(Player):
             self.my_cards_on_table = self.my_cards_on_table[:max([-2, -len(self.my_cards_on_table)])]
 
     def checkCard(self, opponent_declaration):
-        if opponent_declaration in self.cards or opponent_declaration in self.my_cards_on_table or opponent_declaration in self.opponent_cards_on_table:
+        if opponent_declaration in self.cards or opponent_declaration in self.my_cards_on_table or opponent_declaration in self.opponent_cards_on_table or max(self.cards, key=lambda x: x[0])[0] < opponent_declaration[0]:
             return True
         return False
         
