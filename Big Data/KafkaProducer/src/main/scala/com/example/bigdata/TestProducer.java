@@ -25,7 +25,13 @@ public class TestProducer {
         props.put("bootstrap.servers", bootstrapServers);
 // wprowadź poniżej pozostałe parametry producenta Kafki
 // patrz materiały wykładowe lub dokumentacja
-???
+        props.put("acks", "all");
+        props.put("retries", 0);
+        props.put("batch.size", 16384);
+        props.put("linger.ms", 1);
+        props.put("buffer.memory", 33554432);
+        props.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
+        props.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
 // uzupełnij polecenie tworzące producenta Kafki
         KafkaProducer<String, String> producer =  new KafkaProducer<>(props);
 // przeanalizuj poniższy kod aby dowiedzieć się jak on działa
@@ -40,7 +46,7 @@ public class TestProducer {
 // uzupełnij polecenie wysyłające komunikat do odpowiedniego
 // tematu Kafki. Do wskazania tematu użyj zmiennej topicName
 // Kluczem niech będzie wyrażenie String.valueOf(line.hashCode())
-                stream.forEach(line -> ???);
+                stream.forEach(line -> producer.send(new ProducerRecord<String, String>(topicName, String.valueOf(line.hashCode()), line)));
                 TimeUnit.SECONDS.sleep(Integer.parseInt(sleepTime));
             } catch (IOException | InterruptedException e) {
                 e.printStackTrace();
