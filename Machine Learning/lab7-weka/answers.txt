@@ -1,0 +1,44 @@
+1. ARFF (Attribute-Relation File Format) jest prostym formatem pliku tekstowego opisujących listę danych wejściowych charakteryzujących się pewnymi atrybutami. Na pierwszy plan
+przykładowych plików w tym formacie w folderze "data" znajdują się komentarze, które opisują daną relację. Komentarze poprzedzone są znakiem/znakami '%'. Pod komentarzami znajduje
+się nazwa relacji, a pod nią deklaracje poszczególnych atrybutów wraz z ich typami. Relacje, atrybuty jaki i znacznik "data" sugerujący rozpoczęcie się linii zawierających dane
+poprzedzone są anotacją '@'. Pod '@data' znajdują się dane w kolejnych liniach dla poszczególnych atrybutów oddzielone przecinkiem.
+
+2. Najłatwiejsza do odróżnienia wydaje się klasa 'Iris-setosa' na podstawie atrybutu warunkowego 'petallength'.
+
+3. Zarówno JRip jak i PART z niezmienionymi parametrami wykorzystują 3 reguły. Ich złożoność jest dość podobna, gdyż w uzyskanym wyniku dla kroswalidacji oba te klasyfikatory
+wykorzystują w swoich regułach atrybuty 'petallength' oraz 'petalwidth'. W przypadku JRip pierwsza reguła wykorzystuje 3 porównania, druga jedno, trzecia przypisuje wszystkie
+pozostałe dane do ostatniej dostępnej klasy. W przypadku PART pierwsza reguła wykorzystuje 1 porównanie, druga 2 porównania, trzecia przypisuje pozostałe dane do ostatniej klasy
+decyzyjnej. Podobna złożoność reguł wiąże się w tym przypadku z dość podobnymi trafnościami modeli: JRip - 95,(3)%, PART - 94%. Ich różnica jest zatem niewielka i mało znacząca, 
+zarówno w przypadku złożoności reguł jak i uzyskanej trafności.
+
+4. Analizuję zbiór danych soybean.arff. Na podstawie wartości ok. 91% dla obu wariantów algorytmu J48 oraz informacji z Weki (0/1/0) mogę stwierdzić, że zmniejszenie "confidenceFactor"
+do 0.1 statystycznie nie polepszyło ani nie pogorszyło trafności klasyfikowania. Z kolei na podstawie wartości (94,05 i 89,75) oraz informacji z Weki (0/0/1) mogę stwierdzić, że
+zmniejszenie "confidenceFactor" do 0.1 zmniejszyło rozmiar drzewa.
+
+5. Wynik ewaluacji zostanie wyświetlony jako ostatni element na liście wyników - po rezultatach z każdego foldu kroswalidacji.
+
+6. Macierz pomyłek w przypadku ZeroR uwzględnia tylko przyporządkowanie elementów wejściowych do klasy "brown-spot", natomiast macierz pomyłek w przypadku J48 poprawnie klasyfikuje
+większość instancji - ponad 90% z nich znajduje się na głównej przekątnej macierzy. Wygenerowane reguły przez PART: jeśli "outlook" = "overcast" - przyporządkuj do klasy "yes",
+jeśli "humidity" = "high" - przyporządkuj do klasy "no", w przeciwnym wypadku przyporządkuj do klasy "yes". Uruchomienie na zbiorze "145325-regression.txt" tych algorytmów wywoła
+błąd, gdyż są to klasyfikatory a jest to problem regresji wymagający użycia regresora. 
+Regresja liniowa z Weki w porównaniu do tej z scikit-learn uzyskuje podobny rezultat: wartość pierwiastka ze średniego błędu kwadratowego w kroswalidacji z Weki wynosi 303.1383,
+a z scikit-learn 306.1857. Niska wartość współczynnika korelacji (0.3259) implikuje niską wartość współczynnika determinacji i fakt, że nie jest to właściwy model dla zbiorów
+testowych.
+Sieć neuronowa RBF z Weki w porównaniu do tradycyjnej sieci z scikit-learn również nie daje satysfakcjonujących rezultatów - pierwiastek ze średniego błędu kwadratowego wynosi
+297.3437 (nieznacznie więcej niż przy wykorzystaniu scikit-learn) a współczynnik korelacji wynosi zaledwie 0.2832.
+
+7. Zdolność predykcji tego klasyfikatora przy obecnych, domyślnych parametrach prawdopodobnie prowadzi do przeuczenia, gdyż rezultat działania jest zbliżony do rezultatu uzyskanego
+przy pomocy sieci neuronowej RBF. Na podstawie uzyskanych wyników zaprezentowanych poniżej dla różnych wartości parametru "minimum number of instances per leaf" można stwierdzić, że
+im większa jest jego wartość, tym klasyfikator staje się bardziej ogólny, maleje jego błąd na zbiorze testowym i skłonność do przeuczenia.
+
+("minimum number of instances per leaf", "Root mean squared error", "Correlation coefficient")
+(1, 307.8343, 0.2859)
+(2, 307.8343, 0.2859)
+(3, 307.8343, 0.2859)
+(4, 307.8343, 0.2859)
+(5, 299.7163, 0.3055)
+(6, 297.4604, 0.3036)
+(7, 300.8361, 0.2903)
+(8, 302.4659, 0.2815)
+(9, 292.6412, 0.3241)
+(10, 293.3634, 0.3237)

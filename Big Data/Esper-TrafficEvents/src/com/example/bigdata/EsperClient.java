@@ -50,7 +50,24 @@ public class EsperClient {
         try {
             epCompiled = compiler.compile("""
                     @public @buseventtype create json schema TrafficEvent(car string, manufacturer string, city string, car_owner string, velocity int, fine int, penalty_points int, ets string, its string);
-                    @name('result') select * from TrafficEvent;
+                    create table SortedVelocities (car_owner string, city string, velocity int, its string);
+                    create table Top5Velocities (car_owner string, city string, velocity int, its string, rank int);
+                    create table CarOwnersWithCities (car_owner string, city string, velocity int, its string, rank_2 int);
+                    
+                    insert into SortedVelocities
+                    select car_owner, city, velocity, its
+                    from TrafficEvent#time(60) group by city order by velocity desc;
+                    
+                    insert into Top5Velocities
+                    select car_owner, city, velocity, its, grouping_id(city, velocity) as rank
+                    from SortedVelocities group by grouping sets((city, velocity), (car_owner, its));
+                    
+                    insert into CarOwnersWithCities
+                    select car_owner, city, velocity, its, grouping_id(city) as rank_2
+                    from Top5Velocities where rank < 5 group by grouping sets((car_owner), (city, velocity, its)) having count(*) >= 2;
+                    
+                    
+                    @name('result') select m.car_owner as car_owner, (select city from CarOwnersWithCities s where car_owner=m.car_owner and rank_2=0) as city1, (select city from CarOwnersWithCities s where car_owner=m.car_owner and rank_2=1) as city2, min(m.its) as its1 from CarOwnersWithCities m;
                                        
                                         
                                         
