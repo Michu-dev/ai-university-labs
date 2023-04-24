@@ -50,7 +50,9 @@ public class EsperClient {
         try {
             epCompiled = compiler.compile("""
                     @public @buseventtype create json schema TrafficEvent(car string, manufacturer string, city string, car_owner string, velocity int, fine int, penalty_points int, ets string, its string);
-                    @name('result') select * from TrafficEvent;
+                    @name('result') SELECT st.car as car, st.velocity as st_velocity, mid.velocity as mid_velocity, high.velocity as high_velocity, st.its as st_its
+                                        FROM pattern[every (st=TrafficEvent -> mid=TrafficEvent(car=st.car and velocity > st.velocity) -> high=TrafficEvent(car=mid.car and velocity > mid.velocity))
+                                        and not TrafficEvent(car=st.car and velocity < 10)];
                                        
                                         
                                         
