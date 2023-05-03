@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="KafkaReceiver">
+    <output-path>$PROJECT_DIR$/out/artifacts/KafkaReceiver</output-path>
+    <root id="archive" name="KafkaReceiver.jar">
+      <element id="module-output" name="SparkStructuredStreaming" />
+    </root>
+  </artifact>
+</component>
