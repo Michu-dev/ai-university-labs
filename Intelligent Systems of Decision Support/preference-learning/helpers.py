@@ -89,7 +89,7 @@ def Train(model, train_dataloader, test_dataloader, path, lr=0.01, epoch_nr=200)
                 path,
             )
 
-    return best_acc, acc_test, best_auc, auc_test
+    return best_acc, acc_test, best_auc, auc_test, best_f1, f1_test
 
 
 class Hook:
