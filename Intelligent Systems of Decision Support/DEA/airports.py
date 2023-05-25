@@ -114,81 +114,139 @@ def calculate_cross_efficiency(input, output, cities):
 
     return (cross_efficiency, cross_efficiency_results)
 
-     
 
 
-input_path = './inputs.csv'
-output_path = './outputs.csv'
+def calculate_efficiency_distribution(input, output, cities, samples, buckets_number=5):
+    buckets = [(i + 1) / buckets_number for i in range(buckets_number)]
 
-inputs = pd.read_csv(input_path, delimiter=';', header=0, index_col=0)
-outputs = pd.read_csv(output_path, delimiter=';', header=0, index_col=0)
-print(inputs)
-print(outputs)
+    efficiency_results = dict()
+    for city in cities:
+        temp = dict()
+        for ind in samples.index:
+            nominator = np.sum([samples.loc[ind, out] * output.loc[city, out] for out in output.columns])
+            denominator = np.sum([samples.loc[ind, inp] * input.loc[city, inp] for inp in input.columns])
+            temp[ind] = round(nominator / denominator, 3)
+        efficiency_results[city] = temp
+    efficiency_results = pd.DataFrame.from_dict(efficiency_results, orient='index')
+    print(efficiency_results)
+    efficiency_results = efficiency_results.apply(lambda x: x / x.max(), axis=0)
+    print(efficiency_results)
+    bucket_efficiency = dict()
+    for ind in efficiency_results.index:
+        bucket_efficiency[ind] = dict()
+        temp = efficiency_results.loc[ind]
+        for i in range(buckets_number):
+            bucket_efficiency[ind][f'<={buckets[i]}'] = (temp <= buckets[i]).sum() / len(samples)
+            temp = temp[temp > buckets[i]]
+    bucket_efficiency = pd.DataFrame.from_dict(bucket_efficiency, orient='index')
+    expected_efficiency = efficiency_results.mean(axis=1).round(3)
+    return (bucket_efficiency, expected_efficiency)
 
-results = calculate_efficiency(inputs, outputs)
-
-effective_units = []
-non_effective_units = []
-
-for k, v in results.items():
-    if v['efficiency'] == 1:
-        effective_units.append(k)
-    else:
-        non_effective_units.append(k)
-
-# calculate hcu
-hcu = calculate_hcu(inputs, outputs, non_effective_units, results)
-
-
-corrections = calculate_corrections(inputs, outputs, non_effective_units, hcu)
-
-cities = inputs.index.values.tolist()
-superefficiency_results = calculate_superefficiency(inputs, outputs, cities)
-
-crossefficiency, crossefficiency_results = calculate_cross_efficiency(inputs, outputs, cities)
-
-
-print('-------------------------------')
-print('Efektywność')
-for k, v in results.items():
-    print(f"{k}: {v['efficiency']}")
-
-print('------------------------')
-print('Jednostki efektywne')
-print(' '.join(effective_units))
-
-print('------------------------')
-print('Jednostki nieefektywne')
-print(' '.join(non_effective_units))
-
-print('------------------------')
-print('Hipotetyczne jednostki efektywne')
-for k, v in hcu.items():
-    print(k)
-    for k1, v1 in v.items():
-        print(f'{k1}: {v1}')
+def print_ranking(efficiency):
+    for i, k in enumerate(efficiency, 1):
+        print(f'{i}: {k}')
 
 
-print('------------------------')
-print('Poprawki')
-for k, v in corrections.items():
-    print(k)
-    for k1 in v:
-        print(f'{k1}: {v[k1]}')
+if __name__ == '__main__':
+    input_path = './inputs.csv'
+    output_path = './outputs.csv'
+    samples_path = './samples_homework.csv'
 
-print('------------------------')
-print('Superefektywność')
-for city in superefficiency_results:
-    print(f'{city}: {superefficiency_results[city]}')
+    inputs = pd.read_csv(input_path, delimiter=';', header=0, index_col=0)
+    outputs = pd.read_csv(output_path, delimiter=';', header=0, index_col=0)
+    samples = pd.read_csv(samples_path, delimiter=';', header=0, index_col=0)
+    print(inputs)
+    print(outputs)
 
-print('------------------------')
-print('Efektywność krzyżowa')
-print(cities)
-for i in range(len(cities)):
-    print(cities[i] + "  " + str(crossefficiency[i, :]))
+    results = calculate_efficiency(inputs, outputs)
+
+    effective_units = []
+    non_effective_units = []
+
+    for k, v in results.items():
+        if v['efficiency'] == 1:
+            effective_units.append(k)
+        else:
+            non_effective_units.append(k)
+
+    # calculate hcu
+    hcu = calculate_hcu(inputs, outputs, non_effective_units, results)
 
 
+    corrections = calculate_corrections(inputs, outputs, non_effective_units, hcu)
+
+    cities = inputs.index.values.tolist()
+    superefficiency_results = calculate_superefficiency(inputs, outputs, cities)
+
+    crossefficiency, crossefficiency_results = calculate_cross_efficiency(inputs, outputs, cities)
+
+    bucket_efficiency, expected_efficiency = calculate_efficiency_distribution(inputs, outputs, cities, samples)
+
+    print('-------------------------------')
+    print('Efektywność')
+    for k, v in results.items():
+        print(f"{k}: {round(v['efficiency'], 3)}")
+
+    print('------------------------')
+    print('Jednostki efektywne')
+    print(' '.join(effective_units))
+
+    print('------------------------')
+    print('Jednostki nieefektywne')
+    print(' '.join(non_effective_units))
+
+    print('------------------------')
+    print('Hipotetyczne jednostki efektywne')
+    for k, v in hcu.items():
+        print(k)
+        for k1, v1 in v.items():
+            print(f'{k1}: {round(v1, 3)}')
 
 
+    print('------------------------')
+    print('Poprawki')
+    for k, v in corrections.items():
+        print(k)
+        for k1 in v:
+            print(f'{k1}: {round(v[k1], 3)}')
+
+    print('------------------------')
+    print('Superefektywność')
+    for city in superefficiency_results:
+        print(f'{city}: {round(superefficiency_results[city], 3)}')
+
+    print('------------------------')
+    print('Efektywność krzyżowa')
+    print(cities)
+    for i in range(len(cities)):
+        print(cities[i] + "  " + str(crossefficiency[i, :]))
+
+    print('------------------------')
+    print('Średnia efektywność krzyżowa')
+    for key, val in crossefficiency_results.items():
+        print(f'{key}: {round(val, 3)}')
+
+    print('------------------------')
+    print('Rozkład efektywności')
+    print(bucket_efficiency)
+
+    print('------------------------')
+    print('Oczekiwana wartość efektywności')
+    print(expected_efficiency)
+
+    print('------------------------')
+    print('Ranking jednostek dla superefektywności')
+    sorted_superefficiency = dict(sorted(superefficiency_results.items(), key=lambda x: x[1], reverse=True))
+    print_ranking(sorted_superefficiency)
+
+    print('------------------------')
+    print('Ranking jednostek dla średniej efektywności krzyżowej')
+    sorted_crossefficiency = dict(sorted(crossefficiency_results.items(), key=lambda x: x[1], reverse=True))
+    print_ranking(sorted_crossefficiency)
+
+    print('------------------------')
+    print('Ranking jednostek dla oczekiwanej wartości efektywności')
+    sorted_expected_efficiency = expected_efficiency.sort_values(ascending=False)
+    print_ranking(sorted_expected_efficiency.index)
 
 
