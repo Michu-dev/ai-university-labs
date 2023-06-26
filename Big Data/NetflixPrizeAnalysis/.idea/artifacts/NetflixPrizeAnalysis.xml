@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="NetflixPrizeAnalysis">
+    <output-path>$PROJECT_DIR$/out/artifacts/NetflixPrizeAnalysis</output-path>
+    <root id="archive" name="NetflixPrizeAnalysis.jar">
+      <element id="module-output" name="NetflixPrizeAnalysis" />
+    </root>
+  </artifact>
+</component>

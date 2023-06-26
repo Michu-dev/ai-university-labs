@@ -13,7 +13,7 @@ public class NetflixReduceFunction implements ReduceFunction<NetflixPrizeAgg> {
                 sd1.getMonth(),
                 sd1.getRanksCount() + 1,
                 sd1.getRanksSum() + sd2.getRanksSum(),
-                sd1.getUniquePeopleCount() + (sd1.getPeople().contains(sd2.getUserId()) ? Long.valueOf(0) : Long.valueOf(1)),
+                (sd1.getPeople().contains(sd2.getUserId()) ? sd1.getUniquePeopleCount() + Long.valueOf(0) : sd1.getUniquePeopleCount() + Long.valueOf(1)),
                 sd1.getPeople(),
                 sd2.getUserId()
         );

@@ -3,7 +3,12 @@ package com.example.bigdata;
 import com.example.bigdata.connectors.Connectors;
 import com.example.bigdata.model.*;
 import org.apache.flink.api.common.eventtime.WatermarkStrategy;
+import org.apache.flink.api.common.functions.AggregateFunction;
 import org.apache.flink.api.common.functions.MapFunction;
+import org.apache.flink.api.common.functions.ReduceFunction;
+import org.apache.flink.api.java.tuple.Tuple3;
+import org.apache.flink.api.java.tuple.Tuple4;
+import org.apache.flink.api.java.tuple.Tuple5;
 import org.apache.flink.api.java.utils.ParameterTool;
 
 import org.apache.flink.connector.kafka.source.KafkaSource;
@@ -26,6 +31,7 @@ import java.util.HashSet;
 import java.util.Properties;
 import java.util.Random;
 
+
 public class SensorDataAnalysis {
     public static void main(String[] args) throws Exception {
 
@@ -33,27 +39,34 @@ public class SensorDataAnalysis {
         ParameterTool propertiesFromArgs = ParameterTool.fromArgs(args);
         ParameterTool properties = propertiesFromFile.mergeWith(propertiesFromArgs);
 
-//        KafkaSource<String> source = KafkaSource.<String>builder()
-//                .setBootstrapServers(args[1])
-//                .setTopics(args[2])
-//                .setGroupId("my-group")
-//                .setStartingOffsets(OffsetsInitializer.earliest())
-//                .setValueOnlyDeserializer(new SimpleStringSchema())
-//                .build();
+        KafkaSource<String> source = KafkaSource.<String>builder()
+                .setBootstrapServers(args[0])
+                .setTopics(args[1])
+                .setGroupId("my-group")
+                .setStartingOffsets(OffsetsInitializer.earliest())
+                .setValueOnlyDeserializer(new SimpleStringSchema())
+                .build();
 
-        WatermarkStrategy<NetflixPrizeAgg> strategy = WatermarkStrategy.<NetflixPrizeAgg>forBoundedOutOfOrderness(Duration.ofSeconds(20))
-                .withIdleness(Duration.ofMinutes(1))
+        WatermarkStrategy<NetflixPrizeAgg> strategy = WatermarkStrategy.<NetflixPrizeAgg>forBoundedOutOfOrderness(Duration.ofDays(1))
+                .withIdleness(Duration.ofSeconds(1))
                 .withTimestampAssigner((event, timestamp) -> event.getTimestamp());
+
+        if (args.length > 2 && args[2] == "C") {
+            strategy = WatermarkStrategy.<NetflixPrizeAgg>forBoundedOutOfOrderness(Duration.ofSeconds(1))
+                    .withIdleness(Duration.ofSeconds(1))
+                    .withTimestampAssigner((event, timestamp) -> event.getTimestamp());
+        }
+
 
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
 
         env.setStreamTimeCharacteristic(TimeCharacteristic.EventTime);
 
         DataStream<String> inputStream = env
-                .fromSource(Connectors.getFileSource(properties),
+                .fromSource(source,
                         WatermarkStrategy.noWatermarks(), "Kafka Source");
 
-        String filePath = "C:\\Users\\micha\\ai-university-labs\\Big Data\\SensorDataAnalysis\\movie_titles.csv";
+        String filePath = "input_data\\movie_titles.csv";
         CSVFileSource sourceFunction = new CSVFileSource(filePath);
 
         DataStream<String> titlesStream = env.addSource(sourceFunction);
@@ -71,7 +84,6 @@ public class SensorDataAnalysis {
                 .filter(array -> array.length == 4)
                 .filter(array -> array[1].matches("\\d+") && array[2].matches("\\d+") && array[3].matches("\\d+"))
                 .map(array -> new NetflixPrize(array[0], Integer.parseInt(array[1]), Long.parseLong(array[2]), Integer.parseInt(array[3])));
-//                .assignTimestampsAndWatermarks(new MyWatermarkStrategy<NetflixPrize>());
 
         DataStream<NetflixPrize> rr = netflixPrizeDS.join(movieTitles)
                 .where(netflixPrize -> netflixPrize.getFilmId())
@@ -82,7 +94,7 @@ public class SensorDataAnalysis {
 
 
 
-        DataStream<NetflixPrizeAgg> netflixPrizeExtDS = netflixPrizeDS
+        DataStream<NetflixPrizeAgg> netflixPrizeExtDS = rr
                 .map(sd -> new NetflixPrizeAgg(
                         sd.getFilmId(),
                         sd.getTitle(),
@@ -110,17 +122,17 @@ public class SensorDataAnalysis {
 //                    }
 //                });
 
-        KeyedStream<NetflixPrizeAgg, Integer> dataKeyedByFilmId = netflixPrizeExtDS.keyBy(val -> val.getFilmId());
+        KeyedStream<NetflixPrizeAgg, Object> dataKeyedByFilmId = netflixPrizeExtDS.keyBy(event -> new Tuple3<Integer, String, String>(event.getFilmId(), event.getTitle(), event.getMonth()));
 
 
 
-        DataStream<NetflixPrizeAgg> result = dataKeyedByFilmId.window(TumblingEventTimeWindows.of(Time.seconds(1))).reduce(new NetflixReduceFunction());
+        DataStream<NetflixPrizeAgg> result = dataKeyedByFilmId.window(TumblingEventTimeWindows.of(Time.days(720))).reduce(new NetflixReduceFunction());
 
 
 //
 //        DataStream<NetflixPrize> rr1 = rr.assignTimestampsAndWatermarks(new MyWatermarkStrategy<NetflixPrize>());
 
-        result.print();
+        result.addSink(Connectors.getMySQLSink(properties));
 
         env.execute("NetflixDataAnalysis");
     }

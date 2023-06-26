@@ -6,7 +6,7 @@ import org.apache.flink.api.common.eventtime.WatermarkGenerator;
 import org.apache.flink.api.common.eventtime.WatermarkOutput;
 
 public class MyWatermarkGenerator<Object> implements WatermarkGenerator<Object> {
-    private long maxOutOfOrderness = 6000L;
+    private long maxOutOfOrderness = 6L;
     private long currentMaxTimestamp = 0;
 
 

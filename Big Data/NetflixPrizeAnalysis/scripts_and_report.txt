@@ -1,0 +1,65 @@
+Skrypt tworzący klaster:
+gcloud dataproc clusters create ${CLUSTER_NAME} \
+--enable-component-gateway --region ${REGION} --subnet default \
+--master-machine-type n1-standard-4 --master-boot-disk-size 50 \
+--num-workers 2 --worker-machine-type n1-standard-2 --worker-boot-disk-size 50 \
+--image-version 2.1-debian11 --optional-components DOCKER,ZOOKEEPER,FLINK \
+--project ${PROJECT_ID} --max-age=2h \
+--metadata "run-on-master=true" \
+--initialization-actions \
+gs://goog-dataproc-initialization-actions-${REGION}/kafka/kafka.sh
+
+Przygotowanie środowiska (terminal techniczny) - jeśli nie działają poniższe linki upload "ręczny":
+wget https://repo1.maven.org/maven2/org/apache/flink/flink-connectorjdbc/1.15.4/flink-connector-jdbc-1.15.3.jar
+wget https://repo1.maven.org/maven2/com/mysql/mysql-connector-j/8.0.33/mysqlconnector-j-8.0.33.jar
+wget https://repo1.maven.org/maven2/org/apache/flink/flink-connector-kafka/1.17.1/flink-connector-kafka-1.17.1.jar
+sudo cp ~/*-*.jar /usr/lib/flink/lib/
+
+Skopiowanie danych z bucketu do lokalnego środowiska:
+hadoop fs -copyToLocal gs://<BUCKET_NAME>/netflix-prize-data.zip
+hadoop fs -copyToLocal gs://<BUCKET_NAME>/movie_titles.csv
+mkdir input_data
+mv movie_titles.csv input_data/
+unzip netflix-prize-data.zip
+
+Upload producenta i programu przetwarzającego strumień - NetflixPrizeAnalysis.jar, KafkaProducer.jar.
+
+Utworzenie tematu Kafki i uruchomienie źródła (terminal nadawczy):
+CLUSTER_NAME=$(/usr/share/google/get_metadata_value attributes/dataproc-cluster-name)
+kafka-topics.sh --create  --bootstrap-server ${CLUSTER_NAME}-w-1:9092  --replication-factor 2 --partitions 3 --topic kafka-input
+java -cp /usr/lib/kafka/libs/*:KafkaProducer.jar  com.example.bigdata.TestProducer netflix-prize-data 15 kafka-input  0 ${CLUSTER_NAME}-w-0:9092
+
+Przygotowanie ujścia (terminal odbiorczy):
+mkdir /tmp/datadir
+docker run --name mymysql -v /tmp/datadir:/var/lib/mysql -p 6033:3306 \
+ -e MYSQL_ROOT_PASSWORD=my-secret-pw -d mysql:debian
+docker exec -it mymysql bash
+mysql -uroot -pmy-secret-pw
+CREATE USER 'streamuser'@'%' IDENTIFIED BY 'stream';
+CREATE DATABASE IF NOT EXISTS streamdb CHARACTER SET utf8;
+GRANT ALL ON streamdb.* TO 'streamuser'@'%';
+mysql -u streamuser -p streamdb
+Enter pass: stream
+create table netflix_prize_sink (
+    film_id integer,
+    title varchar(500),
+    month varchar(20),
+    ranks_count bigint,
+    ranks_sum bigint,
+    unique_people_count bigint);
+
+Utworzenie pliku flink.properties - konieczność zmiany zmiennej mysql.url.
+
+vim flink.properties
+mkdir -p src/main/resources/
+mv flink.properties src/main/resources/
+
+flink run -m yarn-cluster -p 4 \
+ -yjm 1024m -ytm 1024m -c \
+ com.example.bigdata.SensorDataAnalysis ~/NetflixPrizeAnalysis.jar \
+ --server=${CLUSTER_NAME}-w-0:9092 --topic=kafka-input
+
+Po uruchomieniu na koncie streamuser w terminalu odbiorczym np.:
+select * from netflix_prize_sink;
+
+
