@@ -1,0 +1,7 @@
+1. Umożliwia wysyłanie informacji o określonej częstotliwości z odtwarzanego baga.
+2. Umożliwia uruchomienie czasu symulacji ROS2.
+3. /odom
+4. sensor_msgs/msg/LaserScan
+5. string[] names, string[] prefixes, uint64 depth, uint64 DEPTH_RECURSIVE=0
+6. Ok. 22 Hz na temacie /odom.
+7. True
